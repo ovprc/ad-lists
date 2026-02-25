@@ -1,6 +1,10 @@
 payload:
     - +.vk.com
     - +.reddit.com
+    - +.redd.it
+    - +.redditstatic.com
+    - +.redditmedia.com
+    - +.redditspace.com
     - +.yastatic.net
     - +.yandex.com
     - +.yandex.net
