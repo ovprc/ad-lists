@@ -92,4 +92,43 @@ payload:
     - +.underlords.com
     - +.valvesoftware.com
     - +.steam.cdn.on.net
-
+    - +.ipdata.co
+    - +.ipstack.com
+    - +.db-ip.com
+    - +.abstractapi.com
+    - +.ipify.org
+    - +.whoisxmlapi.com
+    - +.ip2location.com
+    - +.iphub.info
+    - +.ipapi.co
+    - +.geoiplookup.net
+    - +.geoip-db.com
+    - +.ipgeolocationapi.com
+    - +.ipinfo.app
+    - +.iptracking.com
+    - +.blacklistalert.org
+    - +.spamhaus.org
+    - +.spamcop.net
+    - +.dshield.org
+    - +.blocklist.de
+    - +.abuseipdb.com
+    - +.riskradar.com
+    - +.abuse.ch
+    - +.firehol.org
+    - +.torproject.org
+    - +.rudrastyh.com
+    - +.spamhause.org
+    - +.spamhaus.org
+    - +.cymru.com
+    - +.talosintelligence.com
+    - +.alienvault.com
+    - +.virustotal.com
+    - +.abuse.ch
+    - +.malsilo.com
+    - +.securelist.com
+    - +.ipreputation.io
+    - +.surbl.org
+    - +.uribl.com
+    - +.sslbl.org
+    - +.proofpoint.com
+    - +.sorbs.net
