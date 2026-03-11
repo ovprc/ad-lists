@@ -2,6 +2,68 @@ payload:
     - +.max.ru
     - +.apptracer.ru
     - +.oneme.ru
+    - +.vk-analytics.ru
+    - +.api.ipify.org
+    - +.checkip.amazonaws.com
+    - +.ifconfig.me
+    - +.1l-hit.vkplay.ru
+    - +.mytop.vkplay.live
+    - +.stats.vk-portal.net
+    - +.stat.radar.imgsmail.ru
+    - +.swa.mail.ru
+    - +.top.mail.ru
+    - +.fxmail.ru
+    - +.go.imgsmail.ru
+    - +.lf3.mail.ru
+    - +.media-trend.mail.ru
+    - +.mediator.mail.ru
+    - +.r.mail.ru
+    - +.r3.mail.ru
+    - +.ad.mail.ru
+    - +.adfox.mail.ru
+    - +.ads.mail.ru
+    - +.an.mail.ru
+    - +.click.mail.ru
+    - +.collector.mail.ru
+    - +.counter.rambler.ru
+    - +.db.mail.ru
+    - +.delivery.mail.ru
+    - +.gstat.imgsmail.ru
+    - +.imgsmail.ru
+    - +.list-manage.mail.ru
+    - +.log.mail.ru
+    - +.logs.mail.ru
+    - +.metrics.mail.ru
+    - +.mradx.net
+    - +.notify.mail.ru
+    - +.push.mail.ru
+    - +.r0.mail.ru
+    - +.r1.mail.ru
+    - +.r2.mail.ru
+    - +.r4.mail.ru
+    - +.r5.mail.ru
+    - +.rs.mail.ru
+    - +.stat.mail.ru
+    - +.stats.mail.ru
+    - +.track.mail.ru
+    - +.ads.vk.com
+    - +.ads.vk.ru
+    - +.analytics.vk.com
+    - +.connect.vk.com
+    - +.log.vk.com
+    - +.login.vk.com
+    - +.metrics.vk.com
+    - +.pixel.vk.com
+    - +.stat.vk.com
+    - +.stats.vk.com
+    - +.trk.vk.com
+    - +.ads.ok.ru
+    - +.analytics.ok.ru
+    - +.log.ok.ru
+    - +.metrics.ok.ru
+    - +.stat.ok.ru
+    - +.stats.ok.ru
+    - +.target.my.com
     - +.amazon-adsystem.com
     - +.aan.amazon.com
     - +.doubleclick.net
@@ -907,8 +969,6 @@ payload:
     - +.trk.pinterest.com
     - +.pixel.quora.com
     - +.px.srvcs.tumblr.com
-    - +.ads.vk.com
-    - +.ad.mail.ru
     - +.top-fwz1.mail.ru
     - +.metrics.icloud.com
     - +.books-analytics-events.apple.com
@@ -1015,3 +1075,50 @@ payload:
     - +.widget.intercom.io
     - +.js.driftt.com
     - +.ads.tremorhub.com
+    - +.iqweb.io
+    - +.ip-api.com
+    - +.ipinfo.io
+    - +.ipregistry.co
+    - +.ipwho.is
+    - +.ipgeolocation.io
+    - +.proxycheck.io
+    - +.ipqualityscore.com
+    - +.maxmind.com
+    - +.ipdata.co
+    - +.ipstack.com
+    - +.db-ip.com
+    - +.abstractapi.com
+    - +.ipify.org
+    - +.whoisxmlapi.com
+    - +.ip2location.com
+    - +.iphub.info
+    - +.ipapi.co
+    - +.geoiplookup.net
+    - +.geoip-db.com
+    - +.ipgeolocationapi.com
+    - +.ipinfo.app
+    - +.iptracking.com
+    - +.blacklistalert.org
+    - +.spamhaus.org
+    - +.spamcop.net
+    - +.dshield.org
+    - +.blocklist.de
+    - +.abuseipdb.com
+    - +.riskradar.com
+    - +.abuse.ch
+    - +.firehol.org
+    - +.torproject.org
+    - +.rudrastyh.com
+    - +.spamhause.org
+    - +.cymru.com
+    - +.talosintelligence.com
+    - +.alienvault.com
+    - +.virustotal.com
+    - +.malsilo.com
+    - +.securelist.com
+    - +.ipreputation.io
+    - +.surbl.org
+    - +.uribl.com
+    - +.sslbl.org
+    - +.proofpoint.com
+    - +.sorbs.net
