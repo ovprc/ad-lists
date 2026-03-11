@@ -33,7 +33,6 @@ payload:
     - +.log.mail.ru
     - +.logs.mail.ru
     - +.metrics.mail.ru
-    - +.mradx.net
     - +.notify.mail.ru
     - +.push.mail.ru
     - +.r0.mail.ru
