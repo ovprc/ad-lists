@@ -3,9 +3,29 @@ payload:
     - +.apptracer.ru
     - +.oneme.ru
     - +.vk-analytics.ru
-    - +.api.ipify.org
     - +.checkip.amazonaws.com
     - +.ifconfig.me
+    - +.ad.mail.ru
+    - +.cloclo60.datacloudmail.ru
+    - +.trk.mail.ru
+    - +.pulse.mail.ru
+    - +.checklink.mail.ru
+    - +.top.mail.ru
+    - +.chatwoot.on-mail.ru
+    - +.love.mail.ru
+    - +.r.mail.ru
+    - +.top-fwz1.mail.ru
+    - +.1l-hit.mail.ru
+    - +.likemore-go.imgsmail.ru
+    - +.rs.mail.ru
+    - +.radar.imgsmail.ru
+    - +.top-staging.mail.ru
+    - +.xray.mail.ru
+    - +.swa.mail.ru
+    - +.ads.vk.com
+    - +.ads.vk.ru
+    - +.ms.vk.com
+    - +.ms.vk.ru
     - +.amazon-adsystem.com
     - +.aan.amazon.com
     - +.doubleclick.net
