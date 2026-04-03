@@ -1,10 +1,7 @@
 payload:
-    - +.tamtam.chat
     - +.ipv4-internet.yandex.net
     - +.juicedev.ru
-    - +.max.ru
     - +.apptracer.ru
-    - +.oneme.ru
     - +.vk-analytics.ru
     - +.checkip.amazonaws.com
     - +.ifconfig.me
