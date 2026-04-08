@@ -1,9 +1,13 @@
 payload:
     - +.ipv4-internet.yandex.net
+    - +.ipv6-internet.yandex.net
+    - +.appmetrica.yandex.net
     - +.juicedev.ru
+    - +.ipify.org
     - +.apptracer.ru
     - +.vk-analytics.ru
     - +.checkip.amazonaws.com
+    - +.ds.kaspersky.com
     - +.ifconfig.me
     - +.ad.mail.ru
     - +.cloclo60.datacloudmail.ru
