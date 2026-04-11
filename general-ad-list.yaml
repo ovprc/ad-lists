@@ -2,6 +2,7 @@ payload:
     - +.ipv4-internet.yandex.net
     - +.ipv6-internet.yandex.net
     - +.appmetrica.yandex.net
+    - +mc.yandex.ru
     - +.juicedev.ru
     - +.ipify.org
     - +.apptracer.ru
