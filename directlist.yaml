@@ -1,175 +1,175 @@
 payload:
-    - +.ru
-    - +.su
-    - +.рф
-    - +.xn--p1ai
-    - +.дети
-    - +.xn--d1acj3b
-    - +.москва
-    - +.xn--80adxhks
-    - +.moscow
-    - +.рус
-    - +.xn--p1acf
-    - +.yandex
-    - +.сайт
-    - +.xn--80aswg
-    - +.онлайн
-    - +.xn--80asehdb
-    - +.ком
-    - +.xn--j1aef
-    - +.орг
-    - +.xn--c1avg
-    - +.католик
-    - +.xn--80aqecdr1a
-    - +.испытание
-    - +.xn--80akhbyknj4f
-    - +.ру
-    - +.xn--p1ag
-    - +.ru.com
-    - +.ru.net
-    - +.vk.com
-    - +.reddit.com
-    - +.redd.it
-    - +.redditstatic.com
-    - +.redditmedia.com
-    - +.redditspace.com
-    - +.yastatic.net
-    - +.yandex.com
-    - +.yandex.net
-    - +.yandex.kz
-    - +.yandex.uz
-    - +.yandex.com.tr
-    - +.yandex.fr
-    - +.yandex.az
-    - +.yandex.com.ge
-    - +.yandex.com.am
-    - +.yandex.co.il
-    - +.yandex.lv
-    - +.yandex.lt
-    - +.yandex.ee
-    - +.yandex.md
-    - +.yandex.tm
-    - +.yandex.tj
-    - +.yandex.eu
-    - +.yandex.org
-    - +.yandex.mobi
-    - +.yandex.asia
-    - +.yandex.no
-    - +.yandex.sk
-    - +.yandex.rs
-    - +.yandex.ro
-    - +.yandex.it
-    - +.yandex.lu
-    - +.yandex.pl
-    - +.yandex.pt
-    - +.yandex.es
-    - +.yandex.dk
-    - +.yandex.nu
-    - +.yandex.so
-    - +.yandex.qa
-    - +.yandex.in
-    - +.yandex.ie
-    - +.yandex.de
-    - +.yandex.do
-    - +.yandex.mx
-    - +.yandex.by
-    - +.yandex.com.ua
-    - +.yandex.ua
-    - +.animego.org
-    - +.animego.me
-    - +.animego.media
-    - +.cdngos.com
-    - +.aniboom.one
-    - +.boom-img.com
-    - +.kodik.info
-    - +.kodikdb.com
-    - +.aniqit.com
-    - +.kodik.cc
-    - +.kodikplayer.com
-    - +.kodik.online
-    - +.player-cname-domain.com
-    - +.kodik.biz
-    - +.ddos-guard.net
-    - +.remote-ddos-protection.proxy.vpz
-    - +.hdrise.com
-    - +.kodik-storage.com
-    - +.1e100.net
-    - +.digitalone.com
-    - +.iqweb.io
-    - +.ip-api.com
-    - +.ipinfo.io
-    - +.ipregistry.co
-    - +.ipwho.is
-    - +.ipgeolocation.io
-    - +.proxycheck.io
-    - +.ipqualityscore.com
-    - +.maxmind.com
-    - +.hcaptcha.com
-    - +.playartifact.com
-    - +.s.team
-    - +.steam.tv
-    - +.steam-api.com
-    - +.steam-chat.com
-    - +.steamcommunity.com
-    - +.steamcontent.com
-    - +.steamdeck.com
-    - +.steamgames.com
-    - +.steampowered.com
-    - +.steamserver.net
-    - +.steamstatic.com
-    - +.steamusercontent.com
-    - +.underlords.com
-    - +.valvesoftware.com
-    - +.steam.cdn.on.net
-    - +.ipdata.co
-    - +.ipstack.com
-    - +.db-ip.com
-    - +.abstractapi.com
-    - +.ipify.org
-    - +.whoisxmlapi.com
-    - +.ip2location.com
-    - +.iphub.info
-    - +.ipapi.co
-    - +.geoiplookup.net
-    - +.geoip-db.com
-    - +.ipgeolocationapi.com
-    - +.ipinfo.app
-    - +.iptracking.com
-    - +.blacklistalert.org
-    - +.spamhaus.org
-    - +.spamcop.net
-    - +.dshield.org
-    - +.blocklist.de
-    - +.abuseipdb.com
-    - +.riskradar.com
-    - +.abuse.ch
-    - +.firehol.org
-    - +.torproject.org
-    - +.rudrastyh.com
-    - +.spamhause.org
-    - +.spamhaus.org
-    - +.cymru.com
-    - +.talosintelligence.com
-    - +.alienvault.com
-    - +.virustotal.com
-    - +.abuse.ch
-    - +.malsilo.com
-    - +.securelist.com
-    - +.ipreputation.io
-    - +.surbl.org
-    - +.uribl.com
-    - +.sslbl.org
-    - +.proofpoint.com
-    - +.sorbs.net
-    - +.unityfreaks.com
-    - +.developerfreaks.com
-    - +.2gis.com
-    - +.binance.com
-    - +.bnbstatic.com
-    - +.siteapi.org
-    - +.userapi.com
-    - +.carrd.co
-    - +.tamtam.chat
-    - +.dewu.com
-    - +.imgur.com
-    - +.okko.sport
+- +.ru
+- +.su
+- +.рф
+- +.xn--p1ai
+- +.дети
+- +.xn--d1acj3b
+- +.москва
+- +.xn--80adxhks
+- +.moscow
+- +.рус
+- +.xn--p1acf
+- +.yandex
+- +.сайт
+- +.xn--80aswg
+- +.онлайн
+- +.xn--80asehdb
+- +.ком
+- +.xn--j1aef
+- +.орг
+- +.xn--c1avg
+- +.католик
+- +.xn--80aqecdr1a
+- +.испытание
+- +.xn--80akhbyknj4f
+- +.ру
+- +.xn--p1ag
+- +.ru.com
+- +.ru.net
+- +.vk.com
+- +.reddit.com
+- +.redd.it
+- +.redditstatic.com
+- +.redditmedia.com
+- +.redditspace.com
+- +.yastatic.net
+- +.yandex.com
+- +.yandex.net
+- +.yandex.kz
+- +.yandex.uz
+- +.yandex.com.tr
+- +.yandex.fr
+- +.yandex.az
+- +.yandex.com.ge
+- +.yandex.com.am
+- +.yandex.co.il
+- +.yandex.lv
+- +.yandex.lt
+- +.yandex.ee
+- +.yandex.md
+- +.yandex.tm
+- +.yandex.tj
+- +.yandex.eu
+- +.yandex.org
+- +.yandex.mobi
+- +.yandex.asia
+- +.yandex.no
+- +.yandex.sk
+- +.yandex.rs
+- +.yandex.ro
+- +.yandex.it
+- +.yandex.lu
+- +.yandex.pl
+- +.yandex.pt
+- +.yandex.es
+- +.yandex.dk
+- +.yandex.nu
+- +.yandex.so
+- +.yandex.qa
+- +.yandex.in
+- +.yandex.ie
+- +.yandex.de
+- +.yandex.do
+- +.yandex.mx
+- +.yandex.by
+- +.yandex.com.ua
+- +.yandex.ua
+- +.animego.org
+- +.animego.me
+- +.animego.media
+- +.cdngos.com
+- +.aniboom.one
+- +.boom-img.com
+- +.kodik.info
+- +.kodikdb.com
+- +.aniqit.com
+- +.kodik.cc
+- +.kodikplayer.com
+- +.kodik.online
+- +.player-cname-domain.com
+- +.kodik.biz
+- +.ddos-guard.net
+- +.remote-ddos-protection.proxy.vpz
+- +.hdrise.com
+- +.kodik-storage.com
+- +.1e100.net
+- +.digitalone.com
+- +.iqweb.io
+- +.ip-api.com
+- +.ipinfo.io
+- +.ipregistry.co
+- +.ipwho.is
+- +.ipgeolocation.io
+- +.proxycheck.io
+- +.ipqualityscore.com
+- +.maxmind.com
+- +.hcaptcha.com
+- +.playartifact.com
+- +.s.team
+- +.steam.tv
+- +.steam-api.com
+- +.steam-chat.com
+- +.steamcommunity.com
+- +.steamcontent.com
+- +.steamdeck.com
+- +.steamgames.com
+- +.steampowered.com
+- +.steamserver.net
+- +.steamstatic.com
+- +.steamusercontent.com
+- +.underlords.com
+- +.valvesoftware.com
+- +.steam.cdn.on.net
+- +.ipdata.co
+- +.ipstack.com
+- +.db-ip.com
+- +.abstractapi.com
+- +.ipify.org
+- +.whoisxmlapi.com
+- +.ip2location.com
+- +.iphub.info
+- +.ipapi.co
+- +.geoiplookup.net
+- +.geoip-db.com
+- +.ipgeolocationapi.com
+- +.ipinfo.app
+- +.iptracking.com
+- +.blacklistalert.org
+- +.spamhaus.org
+- +.spamcop.net
+- +.dshield.org
+- +.blocklist.de
+- +.abuseipdb.com
+- +.riskradar.com
+- +.abuse.ch
+- +.firehol.org
+- +.torproject.org
+- +.rudrastyh.com
+- +.spamhause.org
+- +.spamhaus.org
+- +.cymru.com
+- +.talosintelligence.com
+- +.alienvault.com
+- +.virustotal.com
+- +.abuse.ch
+- +.malsilo.com
+- +.securelist.com
+- +.ipreputation.io
+- +.surbl.org
+- +.uribl.com
+- +.sslbl.org
+- +.proofpoint.com
+- +.sorbs.net
+- +.unityfreaks.com
+- +.developerfreaks.com
+- +.2gis.com
+- +.binance.com
+- +.bnbstatic.com
+- +.siteapi.org
+- +.userapi.com
+- +.carrd.co
+- +.tamtam.chat
+- +.dewu.com
+- +.imgur.com
+- +.okko.sport
