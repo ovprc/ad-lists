@@ -1,4 +1,13 @@
 payload:
+- +.ipgoat.com
+- +.iphorse.com
+- +.ident.me 
+- +.ip6.me
+- +.whoami.akamai.net
+- +.whoami.cloudflare
+- +.o-o.myaddr.l.google.com
+- +.myip.opendns.com
+- +.proxy6.net
 - +.checkip.me
 - +.easygeoip.com
 - +.mon-ip.fr
