@@ -1,4 +1,6 @@
 payload:
 - GEOSITE,category-ads
 - GEOSITE,category-ads-all
+- GEOSITE,category-ru@ads
+- GEOSITE,category-retail-ru@ads
 - GEOSITE,category-ip-geo-detect
