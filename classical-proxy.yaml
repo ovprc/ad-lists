@@ -1,2 +1,6 @@
 payload:
-- DOMAIN-SUFFIX,tutnetpravilpokachto.btw
+- GEOIP,ru-blocked-community
+- GEOIP,ru-blocked
+- GEOIP,telegram
+- GEOIP,twitter
+- GEOIP,facebook
