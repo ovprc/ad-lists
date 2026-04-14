@@ -1,4 +1,6 @@
 payload:
+- +.w3-reporting.reddit.com
+- +.w3-reporting-nel.reddit.com
 - +.trk2.pinterest.com
 - +.pixel.reddit.com
 - +.pixel-config.reddit.com
