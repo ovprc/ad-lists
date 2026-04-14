@@ -1,6 +1,3 @@
 payload:
-- GEOIP,ru-blocked-community
 - GEOIP,ru-blocked
-- GEOIP,telegram
-- GEOIP,twitter
-- GEOIP,facebook
+- GEOSITE,ru-blocked
