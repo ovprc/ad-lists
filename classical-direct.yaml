@@ -6,4 +6,3 @@ payload:
 - DOMAIN-SUFFIX,advego.com
 - GEOSITE,category-public-tracker
 - GEOIP,private
-- GEOIP,ddos-guard
