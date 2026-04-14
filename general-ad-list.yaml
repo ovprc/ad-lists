@@ -1,4 +1,11 @@
 payload:
+- +.trk2.pinterest.com
+- +.pixel.reddit.com
+- +.pixel-config.reddit.com
+- +.error-tracking.reddit.com
+- +.conversions-config.reddit.com
+- +.alb.reddit.com
+- +.datacollector-dra.dt.hicloud.com
 - +.dai.google.com
 - +.careers.hotjar.com
 - +.tracking.india.miui.com
