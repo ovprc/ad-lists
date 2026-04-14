@@ -4,3 +4,4 @@ payload:
 - IP-CIDR,172.16.0.0/12
 - IP-CIDR,127.0.0.0/8
 - DOMAIN-SUFFIX,advego.com
+- GEOSITE,category-public-tracker
