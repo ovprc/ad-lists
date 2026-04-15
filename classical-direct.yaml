@@ -7,3 +7,6 @@ payload:
 - GEOSITE,category-public-tracker
 - GEOIP,private
 - GEOSITE,category-speedtest
+- DOMAIN-SUFFIX,animego.org
+- DOMAIN-SUFFIX,animego.me
+- DOMAIN-SUFFIX,animego.media
