@@ -312,7 +312,6 @@ payload:
 - DOMAIN-SUFFIX,myip.id
 - DOMAIN-SUFFIX,altproxy.com
 - DOMAIN-SUFFIX,vpntester.org
-- DOMAIN-SUFFIX,speedtest.rt.ru
 - DOMAIN-SUFFIX,kinsta.com
 - DOMAIN-SUFFIX,chkip.info
 - DOMAIN-SUFFIX,namecheap.com
