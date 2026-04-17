@@ -7,8 +7,6 @@ payload:
 - GEOSITE,category-public-tracker
 - GEOSITE,category-speedtest
 - GEOIP,private
-- GEOIP,RU
-- GEOSITE,category-ru
 - GEOIP,ddos-guard
 - DOMAIN-SUFFIX,animego.org
 - DOMAIN-SUFFIX,animego.me
