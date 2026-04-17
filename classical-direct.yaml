@@ -5,8 +5,10 @@ payload:
 - IP-CIDR,127.0.0.0/8
 - DOMAIN-SUFFIX,advego.com
 - GEOSITE,category-public-tracker
-- GEOIP,private
 - GEOSITE,category-speedtest
+- GEOIP,private
+- GEOIP,RU
+- GEOSITE,category-ru
 - GEOIP,ddos-guard
 - DOMAIN-SUFFIX,animego.org
 - DOMAIN-SUFFIX,animego.me
