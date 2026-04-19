@@ -4,6 +4,7 @@ payload:
 - GEOSITE,category-ru@ads
 - GEOSITE,category-retail-ru@ads
 - GEOSITE,category-ip-geo-detect
+- DOMAIN-SUFFIX,portchecker.co
 - DOMAIN-SUFFIX,iknowwhatyoudownload.com
 - DOMAIN-SUFFIX,hide-my-name.net
 - DOMAIN-SUFFIX,ipintel.vercel.app
