@@ -1,3 +1,4 @@
 payload:
 - GEOIP,ru-blocked
 - GEOSITE,ru-blocked
+- AND,((PROCESS-NAME,fortniteclient-win64-shipping.exe),(DOMAIN-SUFFIX,compute.amazonaws.com))
