@@ -3,3 +3,12 @@ payload:
 - GEOSITE,ru-blocked
 - DOMAIN-SUFFIX,click.discord.com
 - AND,((PROCESS-NAME,fortniteclient-win64-shipping.exe),(DOMAIN-SUFFIX,compute.amazonaws.com))
+- PROCESS-NAME,GitHubDesktop.exe
+- PROCESS-NAME,git-remote-https.exe
+- PROCESS-NAME,git.exe
+- GEOSITE,github
+- DOMAIN-SUFFIX,github.com
+- DOMAIN-SUFFIX,githubassets.com
+- DOMAIN-SUFFIX,githubcopilot.com
+- DOMAIN-SUFFIX,ghcr.io
+- DOMAIN-SUFFIX,githubapp.com
