@@ -12,3 +12,6 @@ payload:
 - DOMAIN-SUFFIX,githubcopilot.com
 - DOMAIN-SUFFIX,ghcr.io
 - DOMAIN-SUFFIX,githubapp.com
+- DOMAIN-SUFFIX,github.io
+- DOMAIN-SUFFIX,githubusercontent.com
+- DOMAIN-SUFFIX,github.dev
