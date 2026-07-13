@@ -15,3 +15,4 @@ payload:
 - DOMAIN-SUFFIX,github.io
 - DOMAIN-SUFFIX,githubusercontent.com
 - DOMAIN-SUFFIX,github.dev
+- DOMAIN-SUFFIX,i.scdn.co
