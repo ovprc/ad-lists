@@ -1,0 +1,24 @@
+{
+  "version": 1,
+  "rules": [
+    {
+      "domain_suffix": [
+        "click.discord.com",
+        "ghcr.io",
+        "github.com",
+        "github.dev",
+        "github.io",
+        "githubapp.com",
+        "githubassets.com",
+        "githubcopilot.com",
+        "githubusercontent.com",
+        "i.scdn.co"
+      ],
+      "process_name": [
+        "GitHubDesktop.exe",
+        "git-remote-https.exe",
+        "git.exe"
+      ]
+    }
+  ]
+}

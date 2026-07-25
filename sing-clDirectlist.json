@@ -1,0 +1,63 @@
+{
+  "version": 1,
+  "rules": [
+    {
+      "domain_suffix": [
+        "1e100.net",
+        "advego.com",
+        "aniboom.one",
+        "animego.me",
+        "animego.media",
+        "animego.org",
+        "aniqit.com",
+        "boom-img.com",
+        "cdngos.com",
+        "ddos-guard.net",
+        "hdrise.com",
+        "kodik-storage.com",
+        "kodik.biz",
+        "kodik.cc",
+        "kodik.info",
+        "kodik.online",
+        "kodikdb.com",
+        "kodikplayer.com",
+        "moscow",
+        "player-cname-domain.com",
+        "remote-ddos-protection.proxy.vpz",
+        "ru",
+        "su",
+        "userapi.com",
+        "vk.com",
+        "xn--80adxhks",
+        "xn--80akhbyknj4f",
+        "xn--80aqecdr1a",
+        "xn--80asehdb",
+        "xn--80aswg",
+        "xn--c1avg",
+        "xn--d1acj3b",
+        "xn--j1aef",
+        "xn--p1acf",
+        "xn--p1ag",
+        "xn--p1ai",
+        "yandex",
+        "дети",
+        "испытание",
+        "католик",
+        "ком",
+        "москва",
+        "онлайн",
+        "орг",
+        "ру",
+        "рус",
+        "рф",
+        "сайт"
+      ],
+      "ip_cidr": [
+        "10.0.0.0/8",
+        "127.0.0.0/8",
+        "172.16.0.0/12",
+        "192.168.0.0/16"
+      ]
+    }
+  ]
+}
