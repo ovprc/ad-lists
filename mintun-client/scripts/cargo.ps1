@@ -12,7 +12,7 @@ if (Test-Path -LiteralPath $portable) {
         $env:LIBRARY_PATH = "$hostLibraries;$env:LIBRARY_PATH"
     }
     $cargo = $portable
-} else { $cargo = (Get-Command cargo -ErrorAction Stop).Source }
+} else { $cargo = (Get-Command cargo -CommandType Application -ErrorAction Stop | Select-Object -First 1).Source }
 Push-Location $root
 try {
     & $cargo @CargoArgs

@@ -67,6 +67,8 @@ jobs:
           pwsh --version
       - name: Build authenticated official-core app bundle
         shell: pwsh
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
         run: ./scripts/build-desktop.ps1 -Target $env:MINTUN_TARGET
       - name: Verify native signature and exercise delivered helper without TUN
         run: |

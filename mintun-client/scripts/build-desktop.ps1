@@ -228,9 +228,9 @@ if (Test-Path (Join-Path $tools 'cargo\bin\cargo.exe')) {
         $env:LIBRARY_PATH = "$hostLibraries;$env:LIBRARY_PATH"
     }
 }
-$cargo = (Get-Command cargo -ErrorAction Stop).Source
+$cargo = (Get-Command cargo -CommandType Application -ErrorAction Stop | Select-Object -First 1).Source
 $curlName = if ($env:OS -eq 'Windows_NT') { 'curl.exe' } else { 'curl' }
-$curl = (Get-Command $curlName -CommandType Application -ErrorAction Stop).Source
+$curl = (Get-Command $curlName -CommandType Application -ErrorAction Stop | Select-Object -First 1).Source
 if (-not $Target) {
     $hostLine = & rustc -vV | Where-Object { $_ -like 'host: *' }
     $Target = $hostLine.Substring(6)
@@ -288,7 +288,10 @@ try {
     $assetName = "sing-box-$CoreVersion-$coreOS-$coreArch.$extension"
     $archiveRoot = "sing-box-$CoreVersion-$coreOS-$coreArch"
     $metadata = Join-Path $staging 'official-release.json'
-    & $curl --fail --silent --show-error --proto '=https' --connect-timeout 30 --max-time 120 --max-filesize 4194304 --header 'User-Agent: MinTun-build/2.0' --header 'Accept: application/vnd.github+json' --output $metadata "https://api.github.com/repos/SagerNet/sing-box/releases/tags/v$CoreVersion"
+    $apiHeaders = @('X-GitHub-Api-Version: 2022-11-28')
+    if ($env:GITHUB_TOKEN) { $apiHeaders += "Authorization: Bearer $env:GITHUB_TOKEN" }
+    # Headers use stdin, never process arguments; credentials are not forwarded across origins.
+    $apiHeaders | & $curl --header '@-' --fail --silent --show-error --proto '=https' --connect-timeout 30 --max-time 120 --max-filesize 4194304 --header 'User-Agent: MinTun-build/2.0' --header 'Accept: application/vnd.github+json' --output $metadata "https://api.github.com/repos/SagerNet/sing-box/releases/tags/v$CoreVersion"
     if ($LASTEXITCODE -ne 0) { throw 'Official core release metadata request failed.' }
     $release = Get-Content -LiteralPath $metadata -Raw | ConvertFrom-Json
     if ($release.draft -or $release.tag_name -cne "v$CoreVersion") { throw 'Official core release tag does not match the selected version.' }
@@ -299,8 +302,8 @@ try {
     $expectedHash = $Matches[1].ToLowerInvariant()
     $asset = $assets[0]
     $expectedUrl = "https://github.com/SagerNet/sing-box/releases/download/v$CoreVersion/$assetName"
-    if ($asset.browser_download_url -cne $expectedUrl -or $asset.size -le 0 -or $asset.size -gt 268435456 -or [long]$asset.size -ne $asset.size) {
-        throw 'Invalid official core asset URL/size.'
+    if ($asset.browser_download_url -cne $expectedUrl -or $asset.size -le 0 -or $asset.size -gt 268435456 -or [long]$asset.size -ne $asset.size -or [long]$asset.id -le 0 -or [long]$asset.id -ne $asset.id) {
+        throw 'Invalid official core asset URL/size/identity.'
     }
     $archive = Join-Path $staging $assetName
     $cacheDirectory = Join-Path $tools 'core-packages'
@@ -311,7 +314,8 @@ try {
         # Hash and extract one private snapshot, never the mutable archive/cache directory.
         [IO.File]::Copy($cachedArchive, $archive, $false)
     } else {
-        & $curl --fail --silent --show-error --location --max-redirs 6 --proto '=https' --proto-redir '=https' --retry 2 --connect-timeout 30 --max-time 1200 --max-filesize $asset.size --output $archive $expectedUrl
+        $assetApiUrl = "https://api.github.com/repos/SagerNet/sing-box/releases/assets/$($asset.id)"
+        $apiHeaders | & $curl --header '@-' --header 'Accept: application/octet-stream' --fail --silent --show-error --location --max-redirs 6 --proto '=https' --proto-redir '=https' --retry 2 --connect-timeout 30 --max-time 1200 --max-filesize $asset.size --output $archive $assetApiUrl
         if ($LASTEXITCODE -ne 0) { throw 'Core download failed.' }
     }
     if ((Get-Item -LiteralPath $archive).Length -ne $asset.size -or (Get-FileHash -LiteralPath $archive -Algorithm SHA256).Hash.ToLowerInvariant() -cne $expectedHash) {
@@ -436,7 +440,7 @@ Categories=Network;
             } finally { $archive.Dispose() }
             Copy-Item (Join-Path $package 'MinTunClient.exe') (Join-Path $staging 'MinTunClient.exe')
         } else {
-            $go = if (Test-Path (Join-Path $tools 'go\bin\go.exe')) { Join-Path $tools 'go\bin\go.exe' } else { (Get-Command go -ErrorAction Stop).Source }
+            $go = if (Test-Path (Join-Path $tools 'go\bin\go.exe')) { Join-Path $tools 'go\bin\go.exe' } else { (Get-Command go -CommandType Application -ErrorAction Stop | Select-Object -First 1).Source }
             & $go run (Join-Path $PSScriptRoot 'package-tar.go') $package $packageArchive
             if ($LASTEXITCODE -ne 0) { throw 'Application archive creation failed.' }
         }
