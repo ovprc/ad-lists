@@ -313,4 +313,4 @@ try {
         Get-FileHash -LiteralPath $path -Algorithm SHA256
     }
 } finally { $env:JAVA_HOME = $previousJava }
-Write-Output "PASS: real Rust Windows/Linux packages and both Android release APKs; Android signer SHA256 $certificate. No client/core was executed or installed."
+Write-Output "PASS: real Rust Windows/Linux/macOS packages and both Android release APKs; Android signer SHA256 $certificate. No client/core was executed or installed."
