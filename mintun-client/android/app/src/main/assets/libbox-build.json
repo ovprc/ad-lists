@@ -1,0 +1,12 @@
+{
+    "tag":  "v1.15.0-alpha.13",
+    "commit":  "824dbcfb4dd0a95921840b1737b950cde590241e",
+    "sourceArchiveSha256":  "29047987ed69ba790f2ae4eec62abf41bd1619d093af071f505b4ba081e06b44",
+    "gomobile":  "github.com/sagernet/gomobile@v0.1.12",
+    "tags":  "with_quic,with_wireguard,with_utls,with_clash_api,badlinkname,tfogo_checklinkname0",
+    "ndk":  "28.0.13004108",
+    "androidApi":  26,
+    "go":  "go version go1.27.3 windows/amd64",
+    "extensionSha256":  "3dda42bf2c9df2722ce318a6c0cb5720b8b096d49993312f77c6aca96de1aeb9",
+    "aarSha256":  "0230d6e2db3e80b872a9a163132eb2a36c6af09b394ceec373525653c75b4746"
+}

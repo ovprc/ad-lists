@@ -1,0 +1,85 @@
+name: MinTun native macOS packages
+
+on:
+  push:
+    branches: ['mintun-client/**']
+    paths:
+      - '.github/workflows/mintun-macos.yml'
+      - 'mintun-client/Cargo.*'
+      - 'mintun-client/.cargo/**'
+      - 'mintun-client/build.rs'
+      - 'mintun-client/native/**'
+      - 'mintun-client/ui/**'
+      - 'mintun-client/assets/**'
+      - 'mintun-client/scripts/build-desktop.ps1'
+      - 'mintun-client/scripts/package-tar.go'
+      - 'mintun-client/tests/smoke_macos_helper.py'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: mintun-macos-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  package:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - runner: macos-15-intel
+            target: x86_64-apple-darwin
+            arch: x64
+            macho: x86_64
+          - runner: macos-15
+            target: aarch64-apple-darwin
+            arch: arm64
+            macho: arm64
+    runs-on: ${{ matrix.runner }}
+    timeout-minutes: 60
+    env:
+      MINTUN_TARGET: ${{ matrix.target }}
+      MINTUN_ARCH: ${{ matrix.arch }}
+      MINTUN_MACHO: ${{ matrix.macho }}
+      MACOSX_DEPLOYMENT_TARGET: '12.0'
+    defaults:
+      run:
+        shell: bash
+        working-directory: mintun-client
+    steps:
+      - name: Checkout exact source commit
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          persist-credentials: false
+      - name: Select pinned Rust and genuine Apple SDK
+        run: |
+          rustup toolchain install 1.99.1 --profile minimal --target "$MINTUN_TARGET"
+          rustup default 1.99.1
+          rustc -vV
+          xcrun --show-sdk-path
+          go version
+          pwsh --version
+      - name: Build authenticated official-core app bundle
+        shell: pwsh
+        run: ./scripts/build-desktop.ps1 -Target $env:MINTUN_TARGET
+      - name: Verify native signature and exercise delivered helper without TUN
+        run: |
+          version=$(python3 -c 'import tomllib; print(tomllib.load(open("Cargo.toml", "rb"))["package"]["version"])')
+          package="artifacts/v${version}-rust/macos-${MINTUN_ARCH}"
+          app="$package/MinTunClient.app"
+          client="$app/Contents/MacOS/MinTunClient"
+          core="$app/Contents/MacOS/core/sing-box"
+          test "$(lipo -archs "$client")" = "$MINTUN_MACHO"
+          test "$(lipo -archs "$core")" = "$MINTUN_MACHO"
+          codesign --verify --strict --verbose=2 "$app"
+          "$core" version
+          python3 tests/smoke_macos_helper.py "$package"
+      - name: Upload verified package from this run only
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: mintun-macos-${{ matrix.arch }}
+          path: mintun-client/artifacts/v*-rust/MinTunClient-macos-${{ matrix.arch }}.tar.gz
+          if-no-files-found: error
+          compression-level: 0
+          retention-days: 7

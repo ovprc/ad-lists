@@ -1,0 +1,95 @@
+plugins { id 'com.android.application' }
+
+android {
+    namespace 'app.mintun.client'
+    compileSdk 35
+    ndkVersion '28.0.13004108'
+    defaultConfig {
+        applicationId 'app.mintun.client'
+        minSdk 26
+        targetSdk 35
+        versionCode 20002
+        versionName '2.0.2'
+        testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
+    }
+    buildFeatures { buildConfig true }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+    splits {
+        abi {
+            enable true
+            reset()
+            include 'arm64-v8a', 'x86_64'
+            universalApk false
+        }
+    }
+    sourceSets.main.jniLibs.srcDirs = ['src/main/jniLibs']
+    sourceSets.main.assets.srcDirs = [layout.buildDirectory.dir('generated/public-assets').get().asFile]
+    packaging {
+        jniLibs { useLegacyPackaging = false }
+        resources.excludes += ['META-INF/DEPENDENCIES', 'META-INF/INDEX.LIST']
+    }
+    // Credentials exist only in the build process environment; never in Gradle properties/argv.
+    signingConfigs {
+        distribution {
+            def store = providers.environmentVariable('MINTUN_ANDROID_KEYSTORE').orNull
+            if (store != null && !store.isBlank()) {
+                storeFile file(store)
+                storeType 'PKCS12'
+                storePassword providers.environmentVariable('MINTUN_ANDROID_STORE_PASSWORD').orNull
+                keyAlias providers.environmentVariable('MINTUN_ANDROID_KEY_ALIAS').orNull
+                keyPassword providers.environmentVariable('MINTUN_ANDROID_KEY_PASSWORD').orNull
+            }
+        }
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            // One permanent local identity for both ABI splits; never fall back to debug/unsigned.
+            signingConfig signingConfigs.distribution
+        }
+    }
+}
+
+dependencies {
+    implementation files('libs/libbox.aar')
+    androidTestImplementation 'androidx.test:runner:1.6.2'
+    androidTestImplementation 'androidx.test.ext:junit:1.2.1'
+}
+
+// Runtime assets are an explicit allowlist; source/license material is published separately.
+tasks.register('syncPublicAssets', Sync) {
+    from('src/main/assets') {
+        include 'libbox-build.json', 'libbox-provenance.json'
+    }
+    into(layout.buildDirectory.dir('generated/public-assets'))
+}
+
+tasks.register('requireNativeLibraries') {
+    doLast {
+        ['arm64-v8a', 'x86_64'].each { abi ->
+            if (!file("src/main/jniLibs/${abi}/libmintun_client.so").isFile()) {
+                throw new GradleException("Missing Slint native library for ${abi}; run scripts/build-android.ps1")
+            }
+        }
+        if (!file('libs/libbox.aar').isFile()) {
+            throw new GradleException('Missing source-built libbox; run scripts/build-android.ps1 -BuildLibbox')
+        }
+    }
+}
+tasks.named('preBuild').configure { dependsOn 'requireNativeLibraries', 'syncPublicAssets' }
+
+tasks.register('requireReleaseSigning') {
+    doLast {
+        def config = android.signingConfigs.distribution
+        if (config.storeFile == null || !config.storeFile.isFile() ||
+                config.storePassword == null || config.storePassword.isBlank() ||
+                config.keyPassword == null || config.keyPassword.isBlank() ||
+                config.keyAlias != 'mintun-release') {
+            throw new GradleException('Permanent release signing credentials are missing; use scripts/build-android.ps1 -Configuration Release.')
+        }
+    }
+}
+tasks.matching { it.name == 'preReleaseBuild' }.configureEach { dependsOn 'requireReleaseSigning' }

@@ -1,0 +1,80 @@
+[package]
+name = "mintun-client"
+version = "2.0.2"
+edition = "2024"
+rust-version = "1.92"
+publish = false
+build = "build.rs"
+
+[lib]
+name = "mintun_client"
+path = "native/lib.rs"
+crate-type = ["rlib", "cdylib"]
+
+[[bin]]
+name = "MinTunClient"
+path = "native/main.rs"
+required-features = ["ui"]
+
+[features]
+default = ["ui"]
+ui = ["dep:slint", "dep:slint-build", "dep:rfd"]
+
+[dependencies]
+anyhow = "1"
+aes-gcm = { version = "0.10", features = ["zeroize"] }
+base64 = "0.22"
+chrono = { version = "0.4", default-features = false, features = ["std", "clock"] }
+flate2 = "1"
+futures-util = "0.3"
+hex = "0.4"
+p256 = { version = "0.13", features = ["ecdsa", "pkcs8"] }
+rand = "0.8"
+reqwest = { version = "0.12", default-features = false, features = ["rustls-tls", "socks", "stream"] }
+semver = "1"
+serde = { version = "1", features = ["derive"] }
+serde_json = { version = "1", features = ["raw_value"] }
+sha2 = "0.10"
+slint = { version = "=1.18.1", optional = true, default-features = false, features = ["std", "compat-1-18", "renderer-software", "accessibility", "system-tray"] }
+tar = "0.4"
+tempfile = "3"
+tokio = { version = "1", features = ["rt-multi-thread", "macros", "process", "io-util", "io-std", "net", "time", "sync", "fs"] }
+tokio-util = { version = "0.7", features = ["rt"] }
+url = "2"
+uuid = { version = "1", features = ["v4"] }
+zeroize = { version = "1", features = ["derive"] }
+zip = { version = "2", default-features = false, features = ["deflate"] }
+
+[target.'cfg(not(target_os = "android"))'.dependencies]
+fs2 = "0.4"
+slint = { version = "=1.18.1", optional = true, default-features = false, features = ["backend-winit-x11", "backend-winit-wayland"] }
+rfd = { version = "0.15", optional = true, default-features = false, features = ["xdg-portal", "tokio"] }
+
+[target.'cfg(target_os = "windows")'.dependencies]
+slint = { version = "=1.18.1", optional = true, default-features = false, features = ["unstable-winit-030"] }
+windows-sys = { version = "0.59", features = ["Win32_Foundation", "Win32_Graphics_Gdi", "Win32_System_JobObjects", "Win32_System_Threading", "Win32_System_Console", "Win32_System_Registry", "Win32_Storage_FileSystem", "Win32_System_Diagnostics_Debug", "Win32_System_Diagnostics_ToolHelp", "Win32_System_ProcessStatus", "Win32_Security", "Win32_Security_Authorization", "Win32_UI_Shell", "Win32_UI_WindowsAndMessaging"] }
+
+[target.'cfg(target_os = "linux")'.dependencies]
+libc = "0.2"
+secret-service = { version = "4", default-features = false, features = ["rt-async-io-crypto-rust"] }
+zbus = { version = "5", default-features = false, features = ["async-io", "blocking-api"] }
+
+[target.'cfg(target_os = "macos")'.dependencies]
+libc = "0.2"
+security-framework = "3"
+
+[target.'cfg(target_os = "android")'.dependencies]
+libc = "0.2"
+android-activity = { version = "0.6", features = ["native-activity"] }
+jni = "0.21.1"
+slint = { version = "=1.18.1", optional = true, default-features = false, features = ["backend-android-activity-06"] }
+
+[build-dependencies]
+slint-build = { version = "=1.18.1", optional = true }
+winresource = "0.1"
+
+[profile.release]
+lto = "thin"
+codegen-units = 1
+strip = "symbols"
+panic = "unwind"

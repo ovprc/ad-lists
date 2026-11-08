@@ -1,0 +1,655 @@
+import { ComboBox, Palette, ScrollView, TextEdit } from "std-widgets.slint";
+
+// Application colors are fixed; system appearance never selects a light palette.
+global Theme {
+    in-out property <float> scale: 1;
+    out property <color> canvas: #181d1b;
+    out property <color> surface: #202724;
+    out property <color> ink: #edf3ed;
+    out property <color> muted: #b5c3b8;
+    out property <color> outline: #6f8274;
+    out property <color> primary: #a1e5bd;
+    out property <color> on-primary: #123c28;
+    out property <color> selected: #294535;
+    out property <color> hover: #303d34;
+    out property <color> disabled: #303b34;
+    out property <color> on-disabled: #a3b0a6;
+    out property <color> error: #ffb4a9;
+    out property <color> error-surface: #3b2523;
+}
+
+component Body inherits Text {
+    font-size: 14px * Theme.scale;
+    color: Theme.ink;
+    wrap: word-wrap;
+}
+
+component Note inherits Body {
+    font-size: 13px * Theme.scale;
+    color: Theme.muted;
+}
+
+component Heading inherits Body {
+    font-size: 14px * Theme.scale;
+    font-weight: 600;
+}
+
+
+// Explicit keyboard and accessibility behavior for the few brand-colored
+// controls; text editing, scrolling and release selection use native elements.
+component Action inherits Rectangle {
+    in property <string> text;
+    in property <image> icon;
+    in property <bool> enabled: true;
+    in property <bool> primary: false;
+    in property <bool> selected: false;
+    callback clicked();
+    min-height: 48px * Theme.scale;
+    preferred-height: 48px * Theme.scale;
+    min-width: 48px;
+    horizontal-stretch: 1;
+    vertical-stretch: 0;
+    border-radius: 8px;
+    border-width: focus.has-focus ? 2px : (primary ? 0px : 1px);
+    border-color: focus.has-focus ? (primary ? Theme.ink : Theme.primary) : Theme.outline;
+    background: !enabled ? Theme.disabled : primary ? (pointer.pressed ? Theme.primary.darker(0.15) : pointer.has-hover ? Theme.primary.darker(0.08) : Theme.primary) : pointer.pressed || selected ? Theme.selected : pointer.has-hover ? Theme.hover : Theme.surface;
+    property <color> foreground: !enabled ? Theme.on-disabled : primary ? Theme.on-primary : Theme.ink;
+    forward-focus: focus;
+    accessible-role: button;
+    accessible-label: text;
+    accessible-enabled: enabled;
+    accessible-action-default => { if root.enabled { root.clicked(); } }
+
+    HorizontalLayout {
+        padding-left: root.text.is-empty ? 12px : 16px;
+        padding-right: root.text.is-empty ? 12px : 16px;
+        padding-top: 8px;
+        padding-bottom: 8px;
+        spacing: root.text.is-empty ? 0px : 8px;
+        alignment: center;
+        if root.icon.width > 0: Rectangle {
+            width: 20px;
+            horizontal-stretch: 0;
+            Image {
+                source: root.icon;
+                width: 20px;
+                height: 20px;
+                y: (parent.height - self.height) / 2;
+                colorize: root.foreground;
+                accessible-role: none;
+            }
+        }
+        if !root.text.is-empty: Text {
+            text: root.text;
+            color: root.foreground;
+            font-size: 14px * Theme.scale;
+            min-width: 0px;
+            wrap: word-wrap;
+            font-weight: root.primary ? 600 : 500;
+            horizontal-alignment: center;
+            vertical-alignment: center;
+        }
+    }
+    focus := FocusScope {
+        enabled: root.enabled;
+        key-pressed(event) => {
+            if event.text == Key.Return || event.text == " " {
+                root.clicked();
+                return accept;
+            }
+            reject
+        }
+    }
+    pointer := TouchArea {
+        enabled: root.enabled;
+        mouse-cursor: MouseCursor.pointer;
+        clicked => {
+            focus.focus();
+            root.clicked();
+        }
+    }
+}
+
+component UuidField inherits Rectangle {
+    in-out property <string> text;
+    in property <bool> revealed: false;
+    in property <bool> enabled: true;
+    callback accepted();
+    public function paste() { editor.paste(); editor.focus(); }
+    min-height: 48px * Theme.scale;
+    preferred-height: 48px * Theme.scale;
+    min-width: 0px;
+    vertical-stretch: 0;
+    background: enabled ? Theme.surface : Theme.disabled;
+    border-radius: 8px;
+    border-width: editor.has-focus ? 2px : 1px;
+    border-color: editor.has-focus ? Theme.primary : Theme.outline;
+    forward-focus: editor;
+    accessible-role: text-input;
+    accessible-label: "Ваш UUID";
+    accessible-placeholder-text: "Вставьте UUID от вашего провайдера";
+    accessible-enabled: enabled;
+    // Never expose an unmasked credential through the accessibility tree.
+    accessible-value: root.revealed ? root.text : root.text.is-empty ? "" : "UUID скрыт";
+    accessible-action-set-value(value) => { if root.enabled { root.text = value; } }
+    Rectangle {
+        x: 14px;
+        y: 2px;
+        width: parent.width - 28px;
+        height: parent.height - 4px;
+        clip: true;
+        if root.text.is-empty: Note {
+            width: parent.width;
+            height: parent.height;
+            vertical-alignment: center;
+            wrap: no-wrap;
+            overflow: elide;
+            text: "UUID";
+            accessible-role: none;
+        }
+        editor := TextInput {
+            property <length> scroll-offset: 0px;
+            x: min(0px, max(parent.width - self.width - self.text-cursor-width, self.scroll-offset));
+            width: max(parent.width - self.text-cursor-width, self.preferred-width);
+            height: parent.height;
+            text <=> root.text;
+            enabled: root.enabled;
+            input-type: root.revealed ? InputType.text : InputType.password;
+            single-line: true;
+            font-size: 15px * Theme.scale;
+            color: root.enabled ? Theme.ink : Theme.on-disabled;
+            selection-background-color: Theme.primary;
+            selection-foreground-color: Theme.on-primary;
+            vertical-alignment: center;
+            accessible-role: none;
+            cursor-position-changed(position) => {
+                if position.x + self.scroll-offset < 0px {
+                    self.scroll-offset = -position.x;
+                } else if position.x + self.scroll-offset > parent.width - self.text-cursor-width {
+                    self.scroll-offset = parent.width - position.x - self.text-cursor-width;
+                }
+            }
+            accepted => { root.accepted(); }
+        }
+    }
+}
+
+// One shared action column on desktop; field and action stack on narrow screens.
+component FormRow inherits Rectangle {
+    in property <bool> compact;
+    in property <string> action;
+    in property <bool> enabled: true;
+    in property <bool> primary: false;
+    callback clicked();
+    min-width: 0px;
+    min-height: compact ? details.preferred-height + 8px + 48px * Theme.scale : max(details.preferred-height, 48px * Theme.scale);
+    preferred-height: self.min-height;
+    vertical-stretch: 0;
+    details := VerticalLayout {
+        x: 0px;
+        y: root.compact ? 0px : (root.height - self.preferred-height) / 2;
+        width: root.compact ? root.width : max(0px, root.width - 180px * Theme.scale - 16px);
+        height: self.preferred-height;
+        spacing: 6px;
+        alignment: start;
+        @children
+    }
+    Action {
+        x: root.compact ? 0px : root.width - self.width;
+        y: root.height - self.height;
+        width: root.compact ? root.width : 180px * Theme.scale;
+        height: 48px * Theme.scale;
+        text: root.action;
+        enabled: root.enabled;
+        primary: root.primary;
+        clicked => { root.clicked(); }
+    }
+}
+
+// SystemTrayIcon must be its own exported root. The host retains this component
+// on desktop only; mobile never constructs a tray or hides behind one.
+export component AppTray inherits SystemTrayIcon {
+    in property <bool> running;
+    in property <bool> busy;
+    in property <bool> can-connect;
+    callback show-window();
+    callback toggle-vpn();
+    callback exit-requested();
+
+    icon: @image-url("../assets/mintun.png");
+    title: root.running ? "MinTun — VPN включён" : "MinTun — VPN выключен";
+    tooltip: root.running ? "MinTun — VPN включён" : "MinTun — VPN выключен";
+    visible: true;
+    clicked => { root.show-window(); }
+
+    Menu {
+        MenuItem {
+            title: "Открыть MinTun";
+            activated => { root.show-window(); }
+        }
+        MenuSeparator { }
+        MenuItem {
+            title: root.running ? "Отключить VPN" : "Подключить VPN";
+            enabled: !root.busy && (root.running || root.can-connect);
+            activated => { root.toggle-vpn(); }
+        }
+        MenuSeparator { }
+        MenuItem {
+            title: root.running ? "Отключить VPN и выйти" : "Выйти из MinTun";
+            activated => { root.exit-requested(); }
+        }
+    }
+}
+
+export struct InboundChoice {
+    id: string,
+    available: bool,
+    fingerprint: bool,
+}
+
+export component AppWindow inherits Window {
+    title: "MinTun";
+    icon: @image-url("../assets/mintun.png");
+    preferred-width: 720px;
+    preferred-height: 640px;
+    min-width: 360px;
+    min-height: 360px;
+    background: Theme.canvas;
+    default-font-size: 14px * Theme.scale;
+
+    in property <bool> running;
+    in property <bool> busy;
+    in property <bool> has-profile;
+    in property <bool> has-profile-update;
+    in property <bool> has-application-update;
+    in property <bool> is-android;
+    in property <bool> checking-updates;
+    in property <bool> can-install-core;
+    in property <bool> can-connect;
+    in property <string> status-text;
+    in property <string> error-text;
+    in property <string> profile-revision;
+    in property <string> core-version;
+    in property <string> application-version;
+    in property <string> application-update-version;
+    in property <string> profile-update-version;
+    in property <string> downloaded-application-path;
+    in-out property <string> uuid-text;
+    in property <[string]> core-versions;
+    in-out property <int> selected-core-index: -1;
+    in property <float> progress: -1;
+    in property <length> inset-top: 0px;
+    in property <length> inset-bottom: 0px;
+    in property <length> inset-left: 0px;
+    in property <length> inset-right: 0px;
+    in property <float> text-scale: 1;
+    in property <bool> account-checking;
+    in property <string> account-time: "Нет данных";
+    in property <string> account-traffic: "Нет данных";
+    in property <string> account-updated;
+    in property <string> account-notice;
+    in property <[InboundChoice]> inbound-choices;
+    in property <[string]> inbound-labels;
+    in-out property <int> inbound-index: 0;
+    in property <[string]> fingerprints;
+    in-out property <int> fingerprint-index: 0;
+    in-out property <string> custom-domains;
+    in-out property <string> custom-applications;
+
+    callback toggle-vpn();
+    callback import-invitation();
+    callback apply-uuid(string);
+    callback check-updates();
+    callback refresh-account();
+    callback apply-connection(string, string, string, string);
+    callback select-core(int);
+    callback install-core(int);
+    callback install-profile();
+    callback download-application();
+    callback export-application();
+    callback reveal-error();
+    reveal-error => {
+        error-focus.focus();
+        content.content-y = 0px;
+    }
+    private property <bool> compact: root.width - root.inset-left - root.inset-right < 600px * Theme.scale;
+    private property <bool> uuid-revealed: false;
+    private property <int> active-page: 0;
+    changed active-page => {
+        root.uuid-revealed = false;
+        content.content-y = 0px;
+    }
+    function save-uuid() {
+        if !root.busy && root.has-profile && !root.uuid-text.is-empty {
+            root.uuid-revealed = false;
+            root.apply-uuid(root.uuid-text);
+        }
+    }
+    function save-connection() {
+        if !root.busy && root.has-profile && root.inbound-index >= 0
+            && root.inbound-index < root.inbound-choices.length && root.inbound-choices[root.inbound-index].available
+            && root.fingerprint-index >= 0 && root.fingerprint-index < root.fingerprints.length {
+            root.apply-connection(root.inbound-choices[root.inbound-index].id,
+                root.fingerprint-index == 0 ? "" : root.fingerprints[root.fingerprint-index],
+                root.custom-domains, root.custom-applications);
+        }
+    }
+    changed text-scale => { Theme.scale = max(1, root.text-scale); }
+    changed busy => { root.uuid-revealed = false; }
+    init => { Palette.color-scheme = ColorScheme.dark; }
+
+    Rectangle {
+        width: root.width;
+        height: root.height;
+    VerticalLayout {
+        padding-top: root.inset-top;
+        padding-bottom: root.inset-bottom;
+        padding-left: root.inset-left;
+        padding-right: root.inset-right;
+        spacing: 0px;
+        Rectangle {
+            min-width: 0px;
+            preferred-width: 0px;
+            horizontal-stretch: 1;
+            min-height: navigation.preferred-height;
+            preferred-height: navigation.preferred-height;
+            vertical-stretch: 0;
+            navigation := GridLayout {
+                padding: 16px;
+                padding-bottom: 0px;
+                spacing: 8px;
+                Row {
+                    Action {
+                        text: "VPN";
+                        selected: root.active-page == 0;
+                        clicked => { root.active-page = 0; }
+                    }
+                    Action {
+                        text: "Ключ и профиль";
+                        selected: root.active-page == 1;
+                        clicked => { root.active-page = 1; }
+                    }
+                }
+                Row {
+                    Action {
+                        text: "Обновления";
+                        selected: root.active-page == 2;
+                        clicked => { root.active-page = 2; }
+                    }
+                    Action {
+                        text: "Настройки";
+                        selected: root.active-page == 3;
+                        clicked => { root.active-page = 3; }
+                    }
+                }
+            }
+        }
+        content := ScrollView {
+            min-width: 0px;
+            min-height: 0px;
+            horizontal-scrollbar-policy: always-off;
+            content-width: self.visible-width;
+            content-height: page.preferred-height;
+            error-focus := FocusScope {
+                width: content.visible-width;
+                height: page.preferred-height;
+                accessible-role: groupbox;
+                accessible-label: root.error-text.is-empty ? (root.active-page == 0 ? "Подключение" : root.active-page == 1 ? "Ключ и профиль" : root.active-page == 2 ? "Обновления" : "Настройки") : "Ошибка. " + root.error-text;
+                page := VerticalLayout {
+                    x: max(0px, (content.visible-width - self.width) / 2);
+                    width: min(content.visible-width, 800px);
+                    padding: root.compact ? 16px : 24px;
+                    spacing: 20px;
+                    alignment: start;
+                    if !root.error-text.is-empty: Rectangle {
+                        background: Theme.error-surface;
+                        border-radius: 8px;
+                        min-height: error-layout.preferred-height;
+                        error-layout := VerticalLayout {
+                            padding: 12px;
+                            Body { text: root.error-text; color: Theme.error; }
+                        }
+                    }
+                    if root.active-page == 0: VerticalLayout {
+                        spacing: 24px;
+                        alignment: start;
+                        Rectangle {
+                            min-height: 112px * Theme.scale;
+                            preferred-height: 144px * Theme.scale;
+                            vertical-stretch: 0;
+                            Action {
+                                x: (parent.width - self.width) / 2;
+                                y: (parent.height - self.height) / 2;
+                                width: min(parent.width, 260px * Theme.scale);
+                                height: 64px * Theme.scale;
+                                text: root.busy ? "Подождите…" : root.running ? "Отключить VPN" : "Включить VPN";
+                                primary: true;
+                                enabled: !root.busy && (root.running || root.can-connect);
+                                clicked => { root.toggle-vpn(); }
+                            }
+                        }
+                        VerticalLayout {
+                            spacing: 8px;
+                            Heading { text: "Доступное время"; color: Theme.muted; }
+                            Body { text: root.account-time; font-size: 20px * Theme.scale; }
+                        }
+                        VerticalLayout {
+                            spacing: 8px;
+                            Heading { text: "Остаток трафика"; color: Theme.muted; }
+                            Body { text: root.account-traffic; font-size: 20px * Theme.scale; }
+                        }
+                        VerticalLayout {
+                            spacing: 8px;
+                            if !root.account-updated.is-empty: Note { text: root.account-updated; }
+                            Note { text: root.account-notice; }
+                            Action {
+                                text: root.account-checking ? "Обновление…" : "Обновить данные";
+                                enabled: root.running && !root.busy && !root.account-checking;
+                                clicked => { root.refresh-account(); }
+                            }
+                        }
+                    }
+                    if root.active-page != 0 && (root.busy || root.checking-updates): VerticalLayout {
+                        spacing: 8px;
+                        Note { text: root.status-text.is-empty ? "Выполняется…" : root.status-text; }
+                        if root.busy && root.progress >= 0: Rectangle {
+                            height: 4px;
+                            border-radius: 2px;
+                            background: Theme.disabled;
+                            accessible-role: progress-indicator;
+                            accessible-label: "Ход операции";
+                            accessible-value: "\{round(clamp(root.progress, 0, 100))}%";
+                            Rectangle {
+                                width: parent.width * clamp(root.progress, 0, 100) / 100;
+                                height: parent.height;
+                                border-radius: 2px;
+                                background: Theme.primary;
+                            }
+                        }
+                    }
+                    if root.active-page == 1: VerticalLayout {
+                        spacing: 12px;
+                        Heading { text: "Ключ и профиль"; color: Theme.muted; }
+                        FormRow {
+                            compact: root.compact;
+                            action: "Импортировать ключ";
+                            enabled: !root.busy && !root.running;
+                            clicked => { root.import-invitation(); }
+                            Body { text: root.has-profile ? "Ключ импортирован" : "Ключ не импортирован"; }
+                            if root.has-profile: Note {
+                                text: "Профиль: " + (root.profile-revision.is-empty ? "—" : root.profile-revision);
+                            }
+                        }
+                        FormRow {
+                            compact: root.compact;
+                            action: "Применить UUID";
+                            enabled: root.has-profile && !root.busy && !root.uuid-text.is-empty;
+                            clicked => { root.save-uuid(); }
+                            Body { text: "Ваш UUID"; }
+                            HorizontalLayout {
+                                spacing: 4px;
+                                uuid := UuidField {
+                                    text <=> root.uuid-text;
+                                    revealed: root.uuid-revealed;
+                                    enabled: root.has-profile && !root.busy;
+                                    accepted => { root.save-uuid(); }
+                                }
+                                Action {
+                                    icon: @image-url("icons/paste.svg");
+                                    accessible-label: "Вставить UUID";
+                                    width: 48px;
+                                    horizontal-stretch: 0;
+                                    enabled: root.has-profile && !root.busy;
+                                    clicked => { uuid.paste(); }
+                                }
+                                Action {
+                                    icon: root.uuid-revealed ? @image-url("icons/eye-off.svg") : @image-url("icons/eye.svg");
+                                    accessible-label: root.uuid-revealed ? "Скрыть UUID" : "Показать UUID";
+                                    width: 48px;
+                                    horizontal-stretch: 0;
+                                    enabled: root.has-profile && !root.busy && !root.uuid-text.is-empty;
+                                    clicked => { root.uuid-revealed = !root.uuid-revealed; }
+                                }
+                            }
+                        }
+                    }
+                    if root.active-page == 2: VerticalLayout {
+                        spacing: 12px;
+                        Heading { text: "Обновления"; color: Theme.muted; }
+                        FormRow {
+                            compact: root.compact;
+                            action: root.checking-updates ? "Проверка…" : "Проверить";
+                            enabled: !root.busy && !root.checking-updates;
+                            clicked => { root.check-updates(); }
+                            Body { text: "Ядро: " + (root.core-version.is-empty ? "не установлено" : root.core-version); }
+                        }
+                        if !root.is-android: FormRow {
+                            compact: root.compact;
+                            action: "Установить ядро";
+                            enabled: !root.busy && root.can-install-core && root.selected-core-index >= 0 && root.selected-core-index < root.core-versions.length;
+                            clicked => { root.install-core(root.selected-core-index); }
+                            ComboBox {
+                                min-height: 48px * Theme.scale;
+                                min-width: 0px;
+                                model: root.core-versions;
+                                current-index <=> root.selected-core-index;
+                                enabled: !root.busy && root.core-versions.length > 0;
+                                accessible-label: "Версия ядра";
+                                selected(value) => { root.select-core(self.current-index); }
+                            }
+                        }
+                        FormRow {
+                            compact: root.compact;
+                            action: "Обновить конфиг";
+                            enabled: !root.busy && root.has-profile-update;
+                            clicked => { root.install-profile(); }
+                            Body {
+                                text: "Конфигурация: " + (!root.has-profile ? "нет" : root.profile-revision.is-empty ? "—" : root.profile-revision) + (root.has-profile-update ? " → " + root.profile-update-version : "");
+                            }
+                        }
+                        FormRow {
+                            compact: root.compact;
+                            action: "Скачать";
+                            enabled: !root.busy && root.has-application-update;
+                            clicked => { root.download-application(); }
+                            Body { text: "Приложение: " + root.application-version; }
+                            if root.has-application-update: Note { text: "Доступно: " + root.application-update-version; }
+                        }
+                        if !root.downloaded-application-path.is-empty: VerticalLayout {
+                            spacing: 8px;
+                            if !root.is-android: Body { text: root.downloaded-application-path; }
+                            if root.is-android: Action {
+                                text: "Сохранить APK…";
+                                enabled: !root.busy;
+                                clicked => { root.export-application(); }
+                            }
+                            Note { text: "Установите вручную после выхода из MinTun."; }
+                        }
+                    }
+                    if root.active-page == 3: Rectangle {
+                        min-width: 0px;
+                        min-height: settings-layout.preferred-height;
+                        preferred-height: self.min-height;
+                        vertical-stretch: 0;
+                        settings-layout := VerticalLayout {
+                            width: parent.width;
+                            height: self.preferred-height;
+                            spacing: 20px;
+                            Heading { text: "Подключение и маршрутизация"; }
+                            VerticalLayout {
+                                spacing: 8px;
+                                Body { text: "Сервер (inbound)"; }
+                                ComboBox {
+                                    min-height: 48px * Theme.scale;
+                                    min-width: 0px;
+                                    model: root.inbound-labels;
+                                    current-index <=> root.inbound-index;
+                                    enabled: root.has-profile && !root.busy;
+                                    accessible-label: "Сервер (inbound)";
+                                }
+                                Note { text: "Список обновляется через VPN. Доступны только подключения, разрешённые вашему аккаунту."; }
+                            }
+                            VerticalLayout {
+                                spacing: 8px;
+                                Body { text: "TLS fingerprint"; }
+                                ComboBox {
+                                    min-height: 48px * Theme.scale;
+                                    min-width: 0px;
+                                    model: root.fingerprints;
+                                    current-index <=> root.fingerprint-index;
+                                    enabled: !root.busy && root.inbound-index >= 0 && root.inbound-index < root.inbound-choices.length
+                                        && root.inbound-choices[root.inbound-index].available && root.inbound-choices[root.inbound-index].fingerprint;
+                                    accessible-label: "TLS fingerprint";
+                                }
+                                Note { text: root.inbound-index >= 0 && root.inbound-index < root.inbound-choices.length
+                                    && root.inbound-choices[root.inbound-index].fingerprint
+                                    ? "random выбирает браузерный шаблон; randomized формирует случайный ClientHello."
+                                    : "Для TUIC, Hysteria2 и подключений без совместимого TLS fingerprint не применяется."; }
+                            }
+                            VerticalLayout {
+                                spacing: 8px;
+                                Body { text: "Доменные суффиксы через VPN"; }
+                                TextEdit {
+                                    text <=> root.custom-domains;
+                                    min-height: 96px * Theme.scale;
+                                    preferred-height: 112px * Theme.scale;
+                                    vertical-stretch: 0;
+                                    enabled: root.has-profile && !root.busy;
+                                    font-size: 14px * Theme.scale;
+                                    placeholder-text: "example.org";
+                                    accessible-label: "Доменные суффиксы через VPN";
+                                }
+                                Note { text: "Одна запись на строку, без https:// и *. Суффикс включает все поддомены."; }
+                            }
+                            VerticalLayout {
+                                spacing: 8px;
+                                Body { text: "Приложения через VPN"; }
+                                TextEdit {
+                                    text <=> root.custom-applications;
+                                    min-height: 96px * Theme.scale;
+                                    preferred-height: 112px * Theme.scale;
+                                    vertical-stretch: 0;
+                                    enabled: root.has-profile && !root.busy;
+                                    font-size: 14px * Theme.scale;
+                                    placeholder-text: "ChatGPT.exe";
+                                    accessible-label: "Приложения через VPN";
+                                }
+                                Note { text: "Одна запись на строку: точное имя EXE, без пути и масок. Steam и известные торрент-клиенты запрещены для проксирования."; }
+                                Note { text: "Проверка имён не защищает от переименования EXE или изменённого клиента."; }
+                            }
+                            if root.running: Note { text: "Применение настроек переподключит VPN. При ошибке клиент попытается восстановить предыдущую конфигурацию."; }
+                            Action {
+                                text: root.running ? "Применить с переподключением" : "Сохранить настройки";
+                                primary: true;
+                                enabled: !root.busy && root.has-profile && root.inbound-index >= 0
+                                    && root.inbound-index < root.inbound-choices.length && root.inbound-choices[root.inbound-index].available;
+                                clicked => { root.save-connection(); }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+    }
+}

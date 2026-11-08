@@ -1,0 +1,43 @@
+[Unit]
+Description=MinTun private account and inbound reader
+After=network.target s-ui.service
+
+[Service]
+Type=simple
+SupplementaryGroups=mintun-account-read
+DynamicUser=yes
+EnvironmentFile=/etc/mintun-account-bridge.env
+ExecStart=/usr/bin/python3 -I -B /opt/mintun-account/bridge.py --database /usr/local/s-ui/db/s-ui.db --port 2099 --public-host ${MINTUN_ACCOUNT_PUBLIC_HOST} --port-map ${MINTUN_ACCOUNT_PORT_MAP}
+Restart=on-failure
+RestartSec=5
+TimeoutStopSec=10
+UMask=0077
+NoNewPrivileges=yes
+PrivateTmp=yes
+PrivateDevices=yes
+ProtectSystem=strict
+ProtectHome=yes
+ProtectKernelTunables=yes
+ProtectKernelModules=yes
+ProtectKernelLogs=yes
+ProtectControlGroups=yes
+ProtectClock=yes
+ProtectProc=invisible
+RestrictNamespaces=yes
+RestrictRealtime=yes
+RestrictSUIDSGID=yes
+LockPersonality=yes
+CapabilityBoundingSet=
+AmbientCapabilities=
+RestrictAddressFamilies=AF_INET AF_UNIX
+IPAddressDeny=any
+IPAddressAllow=localhost
+ReadOnlyPaths=/usr/local/s-ui/db
+MemoryMax=96M
+TasksMax=16
+LimitNOFILE=64
+StandardOutput=null
+StandardError=journal
+
+[Install]
+WantedBy=multi-user.target

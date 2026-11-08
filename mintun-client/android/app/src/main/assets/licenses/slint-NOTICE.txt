@@ -1,0 +1,9 @@
+Slint 1.18.1
+Copyright (c) SixtyFPS GmbH <info@slint.dev>
+Source: https://github.com/slint-ui/slint/tree/v1.18.1
+
+This build uses Slint under the GPL-3.0-only alternative, not the
+Slint Royalty-free License. The complete GPL version 3 text and notices
+are provided with the GitHub release and corresponding-source archive,
+not as separate runtime files. Preserve them when redistributing.
+Provide complete corresponding source as required by the GPL.

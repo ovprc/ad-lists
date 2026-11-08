@@ -1,0 +1,17 @@
+{
+  "project": "sing-box / libbox",
+  "repository": "https://github.com/SagerNet/sing-box",
+  "tag": "v1.15.0-alpha.13",
+  "commit": "824dbcfb4dd0a95921840b1737b950cde590241e",
+  "archiveUrl": "https://codeload.github.com/SagerNet/sing-box/tar.gz/refs/tags/v1.15.0-alpha.13",
+  "archiveSha256": "29047987ed69ba790f2ae4eec62abf41bd1619d093af071f505b4ba081e06b44",
+  "gomobileModule": "github.com/sagernet/gomobile@v0.1.12",
+  "ndkVersion": "28.0.13004108",
+  "androidApi": 26,
+  "buildTags": ["with_quic", "with_wireguard", "with_utls", "with_clash_api", "badlinkname", "tfogo_checklinkname0"],
+  "extension": "scripts/android-libbox/mintun.go",
+  "extensionPurpose": "Direct upstream core lifecycle and platform adapter; no command-server, plaintext config snapshots, stderr redirection, or telemetry",
+  "license": "GPL-3.0-or-later, upstream additional naming notice",
+  "referenceAndroidImplementation": "https://github.com/SagerNet/sing-box-for-android/tree/a548a7903e96266a0046018562c73b192edbfc18/app/src/main/java/io/nekohasekai/sfa/bg",
+  "distributionRequirement": "Distribute complete corresponding source for the MinTun application and modified libbox; the source-built libbox archive alone is not the complete application source. No distribution is performed by the build script."
+}

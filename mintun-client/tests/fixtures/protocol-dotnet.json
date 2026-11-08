@@ -1,0 +1,27 @@
+{
+  "invitation": {
+    "format": 1,
+    "feed": {
+      "format": 1,
+      "id": "7aea9b6d-3fdc-44e3-847c-b4fb05e2b5c4",
+      "name": "MinTun \u2014 \u043F\u0440\u043E\u0432\u0435\u0440\u043E\u0447\u043D\u044B\u0439 \u043F\u0440\u043E\u0444\u0438\u043B\u044C",
+      "updateUrl": "https://example.invalid/config.mintun",
+      "encryptionKey": "iT\u002Bkgosvb8rA10tSYRuF4uupplCHr2hGwxLJMxFn2dU=",
+      "signingPublicKey": "MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEHT2hrTw0O5BnzPWggm3FUCxZ2wUqvehMAZdkpZ9DvTYq8Cyh\u002BPI72Ya/z\u002BJD9imbmRPolq94LAsdnnbDhFfBkw=="
+    },
+    "initialConfig": {
+      "format": 1,
+      "payload": "Lunoiwr6BNXaGUYag1G\u002BumaipZnHi7SBbmhGPz4a6tKT8iC2L7iajtU2jqWKeol/xwxLYwKokMS9LtyPUC4TZUoNdfYnoSzoQGwVP7vfjHK9Pn9IKNpWh8hMLnDU/1bLsxZOX2NZKmi67wFElTRxAR1xgrnrChaaCLXCIQujavINI1zJiZErvIS2v69DntI8zJ9ot8azBDYWJ0QGMNoUTL0vYFilHfbV3KhAoDXxuDeNCsUxVGu\u002BXgVp9e7f7YQ0tqT6oJbA9Jmj1MQ5rMxzcgCn/4BirrKCCLtLPOeRpblwh1jtgUY\u002BiUbahzPAKb48sZ0PVA5Ef1BcnWd0PP5GlBgNn7g3HlLn9TVwVjQTZfBx08nhcyCPAZrFYt0RXwur6tyklTvGd7gxc4NJI\u002B4/OVsD1Yuox5bp9kzejMqGv9/PIKMyADh/nvxUsrjdV2h416KjViGj4Eg\u002BROakF\u002BUfVW0VMuLuGkTgorWSqBVj2DEzGmoW/UJ9dcvXpHKE9TTjHNyS1Mg5m0otokkWQEm1laYX04H3ooVO6VXI4Mo\u002B3sAlJL2uNrE56ue99loJiQDi59bucr2CybFODM7inVyvc4SuJuZ4VZz8V\u002BeM2e72Sbg\u002B96R9jbPkFE\u002B/KA5JpKL/580jb2K1baH1w9eBwvXT5uu8LVGixa7Vhw1QGV0890zck8yC1ZQgLha/9JHnLi/fP0rll1McLCCd3j/27YwQkFKMLR1pOVE/M3/IUEC7mWCLQDv403dpZKWYjxQFNRWwN3ieHpN8dRQJsvTxmARf8Mxs8h29Zsbz50mcBajR6DwUc5jmpueObRzMT8Pc3DmN0ofJZoMk/G3N/ovrWxMduE0176EZzOMcA9olKglnJ0AHdQoVQDZtvatjiYnRKVAm6\u002BN1G9kpcKT1wytOlHJK7uFck5N5xon3RiMm9ZaPDPQfi0N83LtNnLS1PzWAFvOmCnLhwKoDNQMr1FxG3fNbS56lw5bChJpBzkAif4uVi6Y4GC2E4AgYBIZ9APIq6imeHNE1vj7LxICagywqSIo5e3hiGi8pdr1LzfdHR4uZqoq1rd0YbepypO5QFut4gNjNnK0Aavf3EIb6didPenOcSl7HKMkTV5gFa4gwYkNj/aCBk3eaOOuXurlpXJ\u002BKiw1xx9o0zYp1n\u002BzffNt\u002Bb3ko6QPaOJmiNh\u002Bt0B6/0jmexkKTkOL8qjjQoxW5kkCW1tMHgO8PqYbvsWGr6hgjbWYhh\u002BRkTFQuX/\u002BCFlRJ3Ozs6WBoZtuU6aznFLuWS3crvPPO\u002Btgg2QAFxpjVaSdhLCNdK3VnoZLTFxd0l3f766H/ehZX1X0gRIb66a7zefdtsMA4YDcJ5FFO7e58nxwoaGJFyI7msVp69VC69gDRPVoBa23WworGgkGv6xqCPMH5Vq79GbtIiV6U09ajzfruGdrvYafoqSmnUAvtHlETjR5FhGH3Ka8W2uFnJ\u002BdgUeM9WZIMm297/kRqeLPhAq963nj9BavGeF87aNtfms8gPb0XusV8T6YxT9JGXT4Uhm0QHYu70IEZAuVcSfSP0dop7V1S5Tj7Ld\u002BTZtGA3Y\u002BdPns8NlkPI\u002BCA1oktOnhc7xT0wTVCBZ/wtX8O6hL0LcqYM22MKvBu1QTDzEjvPBogE5hV\u002Byobbi9qrhOOZynL8YSaQQMZlk0MwRMJFpNYIG\u002BgOwywJHbecN2LX5ZOq3lZ9MeLFX2KMIsjdHVTLz/jTDXPZAEyF4i3x3ZgONWLjf4NK/xzY8Gucs2g7FFSiw8dc8J3/TNl2EaVU3tVXL7FjQ==",
+      "signature": "t5\u002Bwb5UIpWRoW/6PiUTnzsJw4h4B\u002B7CdOAPIc0zNPaj96RegNbtYA0Yf8W0s62K2m\u002BvbX/s3WWlae8GYBAkQvQ=="
+    }
+  },
+  "profile": {
+    "format": 1,
+    "profileId": "7aea9b6d-3fdc-44e3-847c-b4fb05e2b5c4",
+    "revision": 7,
+    "publishedUtc": "2026-11-05T00:00:00+00:00",
+    "minimumCoreVersion": "1.15.0-alpha.13",
+    "outboundTag": "proxy",
+    "configJson": "{\r\n  \u0022log\u0022: {\r\n    \u0022disabled\u0022: true\r\n  },\r\n  \u0022inbounds\u0022: [\r\n    {\r\n      \u0022type\u0022: \u0022tun\u0022,\r\n      \u0022tag\u0022: \u0022tun-in\u0022,\r\n      \u0022address\u0022: [\r\n        \u0022172.30.0.1/30\u0022\r\n      ],\r\n      \u0022auto_route\u0022: false,\r\n      \u0022strict_route\u0022: false\r\n    }\r\n  ],\r\n  \u0022outbounds\u0022: [\r\n    {\r\n      \u0022type\u0022: \u0022vless\u0022,\r\n      \u0022tag\u0022: \u0022proxy\u0022,\r\n      \u0022server\u0022: \u0022example.invalid\u0022,\r\n      \u0022server_port\u0022: 443,\r\n      \u0022uuid\u0022: \u002200000000-0000-0000-0000-000000000000\u0022,\r\n      \u0022tls\u0022: {\r\n        \u0022enabled\u0022: true,\r\n        \u0022server_name\u0022: \u0022example.invalid\u0022\r\n      }\r\n    },\r\n    {\r\n      \u0022type\u0022: \u0022direct\u0022,\r\n      \u0022tag\u0022: \u0022direct\u0022\r\n    }\r\n  ],\r\n  \u0022route\u0022: {\r\n    \u0022auto_detect_interface\u0022: true,\r\n    \u0022final\u0022: \u0022direct\u0022\r\n  }\r\n}"
+  }
+}

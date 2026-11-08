@@ -1,0 +1,34 @@
+.tools/
+artifacts/
+.private/
+/VDS.txt
+**/bin/
+**/obj/
+**/private/
+**/publisher.key
+**/client.mintun
+**/state.bin
+**/state.bin.*
+exe/singbox/configTUN.json
+exe/singbox/cache.db*
+exe/singbox/logs/
+exe/singbox/*.exe
+exe/singbox/*.dll
+
+# Rust outputs; Cargo.lock remains part of the reproducible source.
+/target/
+
+# Android-generated outputs; retain the Go adapter and build scripts.
+/android/.gradle/
+/android/**/build/
+/android/app/src/main/jniLibs/
+/android/app/libs/*.aar
+/android/local.properties
+
+# Private signing material and portable recovery must never be source payloads.
+**/*.p12
+**/*.pfx
+**/*.jks
+**/*.keystore
+**/credentials.dpapi
+**/recovery.json
