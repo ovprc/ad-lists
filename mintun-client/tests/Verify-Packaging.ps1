@@ -254,7 +254,7 @@ foreach ($platform in @('windows-x64','linux-x64','macos-x64','macos-arm64')) {
         $plist.XmlResolver = $null
         $plist.LoadXml((Require-Member $members 'MinTunClient.app/Contents/Info.plist').Text)
         $identity = @{}
-        $nodes = $plist.plist.dict.ChildNodes
+        $nodes = $plist.SelectSingleNode('/plist/dict').ChildNodes
         for ($i = 0; $i -lt $nodes.Count; $i += 2) {
             if ($nodes[$i].Name -cne 'key' -or $i + 1 -ge $nodes.Count -or $identity.ContainsKey($nodes[$i].InnerText)) { throw 'Invalid/duplicate macOS bundle identity key.' }
             $identity.Add($nodes[$i].InnerText, $nodes[$i+1].InnerText)
