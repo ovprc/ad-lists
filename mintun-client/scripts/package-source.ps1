@@ -307,7 +307,9 @@ try {
     $nativeTreeHash = '8c9a82a312a04568bd58ec8addfd5f16dda19c12'
     $nativeSource = Join-Path $thirdParty "naiveproxy-$nativeCommit.tar.gz"
     Download "https://codeload.github.com/SagerNet/naiveproxy/tar.gz/$nativeCommit" $nativeSource
-    $nativeTree = Invoke-RestMethod -Uri "https://api.github.com/repos/SagerNet/naiveproxy/git/trees/${nativeTreeHash}?recursive=1" -Headers @{ 'User-Agent' = 'MinTun-source-packaging' }
+    $sourceHeaders = @{ 'User-Agent' = 'MinTun-source-packaging'; 'X-GitHub-Api-Version' = '2022-11-28' }
+    if ($env:GITHUB_TOKEN) { $sourceHeaders.Authorization = "Bearer $env:GITHUB_TOKEN" }
+    $nativeTree = Invoke-RestMethod -Uri "https://api.github.com/repos/SagerNet/naiveproxy/git/trees/${nativeTreeHash}?recursive=1" -Headers $sourceHeaders
     if ($nativeTree.truncated -or $nativeTree.sha -cne $nativeTreeHash -or @($nativeTree.tree | Where-Object { $_.mode -eq '160000' }).Count) {
         throw 'Native source coverage requires review: truncated tree, wrong pinned tree, or nested submodules.'
     }
