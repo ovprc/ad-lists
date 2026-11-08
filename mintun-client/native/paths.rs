@@ -53,6 +53,9 @@ impl Paths {
         {
             let executable = std::env::current_exe()?;
             let parent = executable.parent().context("Не найден каталог приложения")?;
+            #[cfg(target_os = "macos")]
+            let directory = parent.parent().context("Не найден каталог пакета приложения")?.join("Resources/core");
+            #[cfg(not(target_os = "macos"))]
             let directory = parent.join("core");
             ensure!(directory.is_dir(), "Ядро не найдено. Распакуйте весь пакет MinTun вместе с папкой core.");
             Ok(directory)

@@ -376,7 +376,9 @@ try {
         $binaryDir = $package
         Copy-Item $binary (Join-Path $package $exeName) -Force
     }
-    $coreOut = Join-Path $binaryDir 'core'
+    # Bundled core is an authenticated staging payload, not nested application code.
+    # Resources preserves official bytes/signatures without unsupported MacOS subdirectories.
+    $coreOut = if ($osName -eq 'macos') { Join-Path $resources 'core' } else { Join-Path $binaryDir 'core' }
     New-Item -ItemType Directory -Force -Path $coreOut | Out-Null
     $coreFiles | Where-Object { $trustedFiles.Contains($_.Name) } | Copy-Item -Destination $coreOut -Force
     $source = @{source=$expectedUrl;sha256=$expectedHash;version=$CoreVersion}

@@ -109,7 +109,7 @@ $files = @(
     'scripts/cargo.ps1', 'scripts/pkg-config-linux.cmd', 'scripts/pkg-config-linux.ps1',
     'scripts/android-libbox/mintun.go',
     'scripts/mintun-account-bridge.py', 'scripts/mintun-account-bridge.service',
-    'tests/account.rs', 'tests/test_account_bridge.py',
+    'tests/account.rs', 'tests/helper.rs', 'tests/test_account_bridge.py',
     'tests/Verify-Packaging.ps1', 'tests/fixtures/protocol-dotnet.json',
     'tests/smoke_macos_helper.py',
     'android/build.gradle', 'android/settings.gradle', 'android/gradle.properties',

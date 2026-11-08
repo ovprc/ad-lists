@@ -82,7 +82,7 @@ def main():
         raise RuntimeError("Run as an ordinary user on a disposable macOS runner")
     package = Path(sys.argv[1]).resolve()
     executable = package / "MinTunClient.app/Contents/MacOS/MinTunClient"
-    core = executable.parent / "core"
+    core = package / "MinTunClient.app/Contents/Resources/core"
     with socket.socket() as reservation:
         reservation.bind(("127.0.0.1", 0))
         port = reservation.getsockname()[1]

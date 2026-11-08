@@ -61,7 +61,7 @@ public static class MinTunPackageReader {
     static MinTunPackageMember Member(Stream s, string name, bool directory, long size, long mode, byte[] buffer) {
         if (size < 0 || size > MaxFile || (directory && size != 0)) throw new InvalidDataException("Invalid member size: " + name);
         MinTunPackageMember m = new MinTunPackageMember { Name=name, Directory=directory, Size=size, Mode=mode, Head=new byte[(int)Math.Min(size,65536)] };
-        bool text = !directory && size <= 1048576 && Regex.IsMatch(name, "(?:\\.json|\\.txt|\\.desktop|/LICENSE)$", RegexOptions.IgnoreCase);
+        bool text = !directory && size <= 1048576 && Regex.IsMatch(name, "(?:\\.json|\\.txt|\\.desktop|\\.plist|/LICENSE)$", RegexOptions.IgnoreCase);
         using (MemoryStream metadata = text ? new MemoryStream((int)size) : null)
         using (SHA256 hash = SHA256.Create()) {
             long remaining = size, offset = 0;
@@ -173,30 +173,41 @@ function Assert-Pe($Member, [switch]$Client) {
     if ($p -lt 64 -or $p -gt $h.Length-264 -or [BitConverter]::ToUInt32($h,$p) -ne 17744 -or [BitConverter]::ToUInt16($h,($p+4)) -ne 34404 -or [BitConverter]::ToUInt16($h,($p+24)) -ne 523) { throw "Not Windows x64 PE32+: $($Member.Name)" }
     if ($Client -and ([BitConverter]::ToUInt16($h,($p+92)) -ne 2 -or ([BitConverter]::ToUInt16($h,($p+22)) -band 8192) -ne 0 -or [BitConverter]::ToUInt32($h,($p+248)) -ne 0)) { throw 'Client must be a native GUI executable, not a DLL or managed runtime.' }
 }
+function Assert-MachO($Member, [uint32]$Machine, [uint32]$Kind) {
+    $h = $Member.Head
+    if ($h.Length -lt 32 -or [BitConverter]::ToUInt32($h,0) -ne 4277009103 -or [BitConverter]::ToUInt32($h,4) -ne $Machine -or [BitConverter]::ToUInt32($h,12) -ne $Kind) { throw "Wrong Mach-O64 architecture/type: $($Member.Name)" }
+}
 $desktop = Join-Path $ArtifactsDirectory 'v2.0.2-rust'
-foreach ($os in @('windows','linux')) {
-    $exe = if ($os -eq 'windows') { 'MinTunClient.exe' } else { 'MinTunClient' }
+foreach ($platform in @('windows-x64','linux-x64','macos-x64','macos-arm64')) {
+    $os,$arch = $platform.Split('-')
+    $coreOS = if ($os -eq 'macos') { 'darwin' } else { $os }
+    $coreArch = if ($arch -eq 'x64') { 'amd64' } else { 'arm64' }
+    $coreDirectory = if ($os -eq 'macos') { 'MinTunClient.app/Contents/Resources/core' } else { 'core' }
+    $exe = if ($os -eq 'windows') { 'MinTunClient.exe' } elseif ($os -eq 'macos') { 'MinTunClient.app/Contents/MacOS/MinTunClient' } else { 'MinTunClient' }
     $coreExe = if ($os -eq 'windows') { 'sing-box.exe' } else { 'sing-box' }
-    $archiveName = if ($os -eq 'windows') { 'MinTunClient-win-x64.zip' } else { 'MinTunClient-linux-x64.tar.gz' }
+    $archiveName = if ($os -eq 'windows') { 'MinTunClient-win-x64.zip' } else { "MinTunClient-$os-$arch.tar.gz" }
     $path = Join-Path $desktop $archiveName
     $members = Read-Members $path
     foreach ($entry in $members.Values) {
-        $allowed = $entry.Name -cin @($exe,'mintun-release.json','core/','core/SOURCE.json',"core/$coreExe")
+        $allowed = $entry.Name -cin @($exe,'mintun-release.json',"$coreDirectory/","$coreDirectory/SOURCE.json","$coreDirectory/$coreExe")
         if ($os -eq 'windows') { $allowed = $allowed -or $entry.Name -cmatch '^core/[A-Za-z0-9][A-Za-z0-9._-]*\.dll$' }
-        else { $allowed = $allowed -or $entry.Name -cin @('mintun.desktop','mintun.png') -or $entry.Name -cmatch '^core/[A-Za-z0-9][A-Za-z0-9._-]*\.so(?:\.[0-9]+)*$' }
-        if (-not $allowed -or ($entry.Directory -and $entry.Name -cne 'core/')) { throw "Unexpected/private/runtime file in ${archiveName}: $($entry.Name)" }
-        if ($os -eq 'linux') {
-            $mode = if ($entry.Directory -or $entry.Name -cin @($exe,"core/$coreExe")) { 493 } else { 420 }
+        elseif ($os -eq 'linux') { $allowed = $allowed -or $entry.Name -cin @('mintun.desktop','mintun.png') -or $entry.Name -cmatch '^core/[A-Za-z0-9][A-Za-z0-9._-]*\.so(?:\.[0-9]+)*$' }
+        else {
+            $allowed = $allowed -or $entry.Name -cin @('MinTunClient.app/','MinTunClient.app/Contents/','MinTunClient.app/Contents/MacOS/','MinTunClient.app/Contents/Resources/','MinTunClient.app/Contents/_CodeSignature/','MinTunClient.app/Contents/Info.plist','MinTunClient.app/Contents/Resources/mintun.icns','MinTunClient.app/Contents/_CodeSignature/CodeResources') -or $entry.Name -cmatch '^MinTunClient\.app/Contents/Resources/core/[A-Za-z0-9][A-Za-z0-9._-]*\.dylib$'
+        }
+        if (-not $allowed -or ($entry.Directory -and $os -ne 'macos' -and $entry.Name -cne 'core/')) { throw "Unexpected/private/runtime file in ${archiveName}: $($entry.Name)" }
+        if ($os -ne 'windows') {
+            $mode = if ($entry.Directory -or $entry.Name -cin @($exe,"$coreDirectory/$coreExe")) { 493 } else { 420 }
             if ($entry.Mode -ne $mode) { throw "Incorrect Unix mode for $($entry.Name): $($entry.Mode)" }
         }
     }
     $client = Require-Member $members $exe
-    $core = Require-Member $members "core/$coreExe"
+    $core = Require-Member $members "$coreDirectory/$coreExe"
     $manifest = (Require-Member $members 'mintun-release.json').Text | ConvertFrom-Json
-    if ($manifest.product -cne 'MinTun Client' -or $manifest.version -cne '2.0.2' -or $manifest.os -cne $os -or $manifest.arch -cne 'x64' -or $manifest.executable -cne $exe -or $manifest.sha256 -cne $client.Sha256) { throw "Wrong release identity or executable digest: $archiveName" }
-    $provenance = (Require-Member $members 'core/SOURCE.json').Text | ConvertFrom-Json
+    if ($manifest.product -cne 'MinTun Client' -or $manifest.version -cne '2.0.2' -or $manifest.os -cne $os -or $manifest.arch -cne $arch -or $manifest.executable -cne $exe -or $manifest.sha256 -cne $client.Sha256) { throw "Wrong release identity or executable digest: $archiveName" }
+    $provenance = (Require-Member $members "$coreDirectory/SOURCE.json").Text | ConvertFrom-Json
     $extension = if ($os -eq 'windows') { 'zip' } else { 'tar.gz' }
-    $officialName = "sing-box-1.15.0-alpha.13-$os-amd64.$extension"
+    $officialName = "sing-box-1.15.0-alpha.13-$coreOS-$coreArch.$extension"
     $officialUrl = "https://github.com/SagerNet/sing-box/releases/download/v1.15.0-alpha.13/$officialName"
     $officialPath = Join-Path $CoreArchiveDirectory $officialName
     Require-File $officialPath
@@ -205,19 +216,19 @@ foreach ($os in @('windows','linux')) {
     $expected = [Collections.Generic.Dictionary[string,object]]::new([StringComparer]::Ordinal)
     foreach ($entry in $official.Values) {
         if ($entry.Directory) { continue }
-        $prefix = "sing-box-1.15.0-alpha.13-$os-amd64/"
+        $prefix = "sing-box-1.15.0-alpha.13-$coreOS-$coreArch/"
         $name = $entry.Name
         if ($name.StartsWith($prefix, [StringComparison]::Ordinal)) { $name = $name.Substring($prefix.Length) }
         if ($name.Contains('/')) { throw "Unexpected official core layout: $($entry.Name)" }
         if ($name -ine 'sing-box' -and $name -notmatch '\.(exe|dll|dylib)$|\.so(\.[0-9]+)*$') { continue }
-        $expected.Add("core/$name", $entry)
+        $expected.Add("$coreDirectory/$name", $entry)
     }
     foreach ($name in $expected.Keys) {
         $entry = Require-Member $members $name
         if ($entry.Sha256 -cne $expected[$name].Sha256) { throw "Bundled core differs from verified official archive: $name" }
     }
     foreach ($entry in $members.Values) {
-        if (-not $entry.Directory -and $entry.Name.StartsWith('core/', [StringComparison]::Ordinal) -and $entry.Name -cne 'core/SOURCE.json' -and -not $expected.ContainsKey($entry.Name)) { throw "Extra bundled core file: $($entry.Name)" }
+        if (-not $entry.Directory -and $entry.Name.StartsWith("$coreDirectory/", [StringComparison]::Ordinal) -and $entry.Name -cne "$coreDirectory/SOURCE.json" -and -not $expected.ContainsKey($entry.Name)) { throw "Extra bundled core file: $($entry.Name)" }
     }
     if ($os -eq 'windows') {
         Assert-Pe $client -Client
@@ -227,11 +238,29 @@ foreach ($os in @('windows','linux')) {
         if ((Get-FileHash -LiteralPath $standalone -Algorithm SHA256).Hash.ToLowerInvariant() -cne $client.Sha256) { throw 'Standalone Windows EXE differs from release ZIP.' }
         $identity = [Diagnostics.FileVersionInfo]::GetVersionInfo([IO.Path]::GetFullPath($standalone))
         if ($identity.ProductName -cne 'MinTun Client' -or $identity.ProductMajorPart -ne 2 -or $identity.ProductMinorPart -ne 0 -or $identity.ProductBuildPart -ne 2 -or $identity.ProductPrivatePart -ne 0) { throw 'Wrong Windows executable product/version resource.' }
-    } else {
+    } elseif ($os -eq 'linux') {
         Assert-Elf $client 62
         Assert-Elf $core 62
         $null = Require-Member $members 'mintun.desktop'
         $null = Require-Member $members 'mintun.png'
+    } else {
+        $machine = if ($arch -eq 'x64') { 16777223 } else { 16777228 }
+        Assert-MachO $client $machine 2
+        Assert-MachO $core $machine 2
+        foreach ($entry in $members.Values) {
+            if (-not $entry.Directory -and $entry.Name.EndsWith('.dylib', [StringComparison]::Ordinal)) { Assert-MachO $entry $machine 6 }
+        }
+        $plist = [Xml.XmlDocument]::new()
+        $plist.XmlResolver = $null
+        $plist.LoadXml((Require-Member $members 'MinTunClient.app/Contents/Info.plist').Text)
+        $identity = @{}
+        $nodes = $plist.plist.dict.ChildNodes
+        for ($i = 0; $i -lt $nodes.Count; $i += 2) {
+            if ($nodes[$i].Name -cne 'key' -or $i + 1 -ge $nodes.Count -or $identity.ContainsKey($nodes[$i].InnerText)) { throw 'Invalid/duplicate macOS bundle identity key.' }
+            $identity.Add($nodes[$i].InnerText, $nodes[$i+1].InnerText)
+        }
+        if ($identity.CFBundleIdentifier -cne 'app.mintun.client' -or $identity.CFBundleExecutable -cne 'MinTunClient' -or $identity.CFBundlePackageType -cne 'APPL' -or $identity.CFBundleVersion -cne '2.0.2' -or $identity.CFBundleShortVersionString -cne '2.0.2') { throw 'Wrong macOS app bundle identity/version.' }
+        $null = Require-Member $members 'MinTunClient.app/Contents/_CodeSignature/CodeResources'
     }
     Get-FileHash -LiteralPath $path -Algorithm SHA256
 }
