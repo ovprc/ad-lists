@@ -1,0 +1,110 @@
+name: MinTun verified macOS artifact promotion
+
+on:
+  push:
+    branches: ['mintun-client/v2.0.2']
+    paths: ['.github/workflows/mintun-macos-transfer.yml']
+
+permissions: {}
+
+jobs:
+  promote:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    permissions:
+      actions: read
+      contents: write
+    steps:
+      - name: Transfer exact successful producer artifacts to the existing draft only
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          import hashlib
+          import io
+          import json
+          import os
+          from pathlib import Path
+          import stat
+          import subprocess
+          import urllib.error
+          import urllib.parse
+          import urllib.request
+          import zipfile
+
+          repository = 'ovprc/ad-lists'
+          run_id = 42473742621
+          producer_sha = '6d92dad74983eef0ef48b5cd01cb9aaa4913f184'
+          release_id = 438197319
+          token = os.environ['GH_TOKEN']
+          headers = {'Authorization': 'Bearer ' + token, 'User-Agent': 'MinTun-promotion',
+                     'X-GitHub-Api-Version': '2022-11-28'}
+
+          def api(path):
+              with urllib.request.urlopen(urllib.request.Request(
+                      'https://api.github.com/repos/' + repository + path,
+                      headers=headers), timeout=45) as response:
+                  body = response.read(4 * 1024 * 1024 + 1)
+                  assert len(body) <= 4 * 1024 * 1024
+                  return json.loads(body)
+
+          producer = api('/actions/runs/' + str(run_id))
+          assert producer['head_sha'] == producer_sha and producer['event'] == 'push'
+          assert producer['conclusion'] == 'success' and producer['status'] == 'completed'
+          assert producer['head_branch'] == 'mintun-client/v2.0.2'
+          assert producer['repository']['full_name'] == repository
+          release = api('/releases/' + str(release_id))
+          assert release['draft'] and release['tag_name'] == 'mintun-v2.0.2'
+
+          class NoRedirect(urllib.request.HTTPRedirectHandler):
+              def redirect_request(self, request, fp, code, message, response_headers, newurl):
+                  return None
+
+          opener = urllib.request.build_opener(NoRedirect)
+          artifacts = [
+              ('x64', 13615465173, 40195893, '3773e9fa36cc8811a797c77eadf3a2b483657c83b317ba1d298d51e3cc7d111e'),
+              ('arm64', 13614343807, 37699012, '49caa6ed57b6fa02e8d20fd3bc9bce19f72f5cdc39155e16e225c1c467a92c5f'),
+          ]
+          for arch, artifact_id, size, expected_digest in artifacts:
+              metadata = api('/actions/artifacts/' + str(artifact_id))
+              assert metadata['workflow_run']['id'] == run_id
+              assert metadata['workflow_run']['head_sha'] == producer_sha
+              assert metadata['name'] == 'mintun-macos-' + arch and not metadata['expired']
+              assert metadata['size_in_bytes'] == size and metadata['digest'] == 'sha256:' + expected_digest
+              request = urllib.request.Request('https://api.github.com/repos/' + repository
+                  + '/actions/artifacts/' + str(artifact_id) + '/zip', headers=headers)
+              try:
+                  response = opener.open(request, timeout=45)
+              except urllib.error.HTTPError as error:
+                  if error.code not in (301, 302, 303, 307, 308):
+                      raise
+                  location = error.headers['Location']
+                  origin = urllib.parse.urlparse(location)
+                  assert origin.scheme == 'https' and origin.username is None
+                  assert origin.hostname.endswith(('.blob.core.windows.net', '.githubusercontent.com'))
+                  response = urllib.request.urlopen(urllib.request.Request(location,
+                      headers={'User-Agent': 'MinTun-promotion'}), timeout=120)
+              with response:
+                  content = response.read(size + 1)
+              assert len(content) == size and hashlib.sha256(content).hexdigest() == expected_digest
+              filename = 'MinTunClient-macos-' + arch + '.tar.gz'
+              with zipfile.ZipFile(io.BytesIO(content)) as bundle:
+                  entries = bundle.infolist()
+                  assert len(entries) == 1
+                  entry = entries[0]
+                  assert entry.filename in (filename, 'v2.0.2-rust/' + filename)
+                  assert stat.S_IFMT(entry.external_attr >> 16) in (0, stat.S_IFREG)
+                  assert 0 < entry.file_size < 512 * 1024 * 1024
+                  payload = bundle.read(entry)
+              digest = hashlib.sha256(payload).hexdigest()
+              Path(filename).write_bytes(payload)
+              subprocess.run(['gh', 'release', 'upload', 'mintun-v2.0.2', filename,
+                              '--repo', repository], check=True)
+              published = [asset for asset in api('/releases/' + str(release_id) + '/assets?per_page=100')
+                           if asset['name'] == filename]
+              assert len(published) == 1
+              assert published[0]['size'] == len(payload) and published[0]['digest'] == 'sha256:' + digest
+              print('PASS exact producer artifact promoted to unpublished draft:', filename,
+                    len(payload), digest, flush=True)
+          PY
